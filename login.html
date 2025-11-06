@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Dashboard SMESCO</title>
+    <style>
+        :root {
+            /* Colors */
+            --color-bg-primary: #000000;
+            --color-bg-light: #0a0a0a;
+            --color-bg-card: #111111;
+            --color-bg-card-hover: #1a1a1a;
+            --color-text-primary: #ffffff;
+            --color-text-secondary: #999999;
+            --color-text-tertiary: #666666;
+            --color-border-default: #1a1a1a;
+            --color-border-hover: #333333;
+            --color-accent-cyan: #06b6d4;
+            --color-accent-green: #22c55e;
+            --color-accent-red: #ef4444;
+
+            /* Typography */
+            --font-family-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            --font-size-xs: 11px;
+            --font-size-sm: 12px;
+            --font-size-base: 14px;
+            --font-size-md: 15px;
+            --font-size-lg: 16px;
+            --font-size-xl: 18px;
+            --font-size-2xl: 20px;
+            --font-size-3xl: 24px;
+            --font-size-4xl: 32px;
+            --font-size-5xl: 36px;
+            --font-weight-light: 300;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+
+            /* Spacing */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 12px;
+            --spacing-base: 16px;
+            --spacing-lg: 20px;
+            --spacing-xl: 24px;
+            --spacing-2xl: 32px;
+            --spacing-3xl: 40px;
+            --spacing-4xl: 48px;
+            --spacing-5xl: 64px;
+
+            /* Border Radius */
+            --border-radius-sm: 4px;
+            --border-radius-base: 6px;
+            --border-radius-md: 8px;
+            --border-radius-lg: 12px;
+            --border-radius-xl: 16px;
+
+            /* Transitions */
+            --transition-fast: 150ms ease;
+            --transition-base: 200ms ease;
+            --transition-slow: 300ms ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            font-family: var(--font-family-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-lg);
+        }
+
+        .login-container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            min-height: 600px;
+            background-color: var(--color-bg-light);
+            border-radius: var(--border-radius-xl);
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-left {
+            flex: 1;
+            background: linear-gradient(135deg, var(--color-bg-card) 0%, var(--color-bg-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-4xl);
+            position: relative;
+        }
+
+        .login-left::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.5;
+        }
+
+        .login-image {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            opacity: 0.8;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+        }
+
+        .login-right {
+            flex: 1;
+            padding: var(--spacing-5xl);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 400px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: var(--spacing-4xl);
+        }
+
+        .login-title {
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-md);
+            letter-spacing: -0.5px;
+        }
+
+        .login-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--color-text-tertiary);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .login-form {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .form-label {
+            display: block;
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: var(--spacing-lg) var(--spacing-base);
+            background-color: var(--color-bg-card);
+            border: 2px solid var(--color-border-default);
+            border-radius: var(--border-radius-base);
+            color: var(--color-text-primary);
+            font-size: var(--font-size-base);
+            font-family: var(--font-family-primary);
+            transition: all var(--transition-base);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-accent-cyan);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+            background-color: var(--color-bg-card-hover);
+        }
+
+        .form-input::placeholder {
+            color: var(--color-text-tertiary);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: var(--spacing-lg) var(--spacing-base);
+            background: linear-gradient(135deg, var(--color-accent-cyan) 0%, #0891b2 100%);
+            border: none;
+            border-radius: var(--border-radius-base);
+            color: var(--color-text-primary);
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            margin-top: var(--spacing-lg);
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(6, 182, 212, 0.3);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: var(--spacing-3xl);
+            padding-top: var(--spacing-xl);
+            border-top: 1px solid var(--color-border-default);
+        }
+
+        .login-footer-text {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-tertiary);
+        }
+
+        .login-footer-link {
+            color: var(--color-accent-cyan);
+            text-decoration: none;
+            font-weight: var(--font-weight-medium);
+            transition: color var(--transition-base);
+        }
+
+        .login-footer-link:hover {
+            color: #22d3ee;
+        }
+
+        /* Error message */
+        .error-message {
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--color-accent-red);
+            color: var(--color-accent-red);
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius-base);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-lg);
+            display: none;
+        }
+
+        /* Success message */
+        .success-message {
+            background-color: rgba(34, 197, 94, 0.1);
+            border: 1px solid var(--color-accent-green);
+            color: var(--color-accent-green);
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius-base);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-lg);
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+                min-height: auto;
+            }
+
+            .login-left {
+                min-height: 300px;
+                padding: var(--spacing-2xl);
+            }
+
+            .login-right {
+                padding: var(--spacing-2xl);
+                min-width: auto;
+            }
+
+            .login-title {
+                font-size: var(--font-size-3xl);
+            }
+
+            .login-image {
+                max-width: 250px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: var(--spacing-sm);
+            }
+
+            .login-right {
+                padding: var(--spacing-lg);
+            }
+
+            .login-title {
+                font-size: var(--font-size-2xl);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Left Side - Image -->
+        <div class="login-left">
+            <img src="image.png" alt="SMESCO Dashboard" class="login-image">
+        </div>
+
+        <!-- Right Side - Login Form -->
+        <div class="login-right">
+            <div class="login-header">
+                <h1 class="login-title">Welcome Back</h1>
+                <p class="login-subtitle">Sign in to access your Dashboard</p>
+            </div>
+
+            <form class="login-form" id="loginForm">
+                <div id="errorMessage" class="error-message">
+                    Invalid username or password. Please try again.
+                </div>
+
+                <div id="successMessage" class="success-message">
+                    Login successful! Redirecting...
+                </div>
+
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" id="username" name="username" class="form-input" placeholder="Enter your username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-input" placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit" class="login-button">Sign In</button>
+            </form>
+
+            <div class="login-footer">
+                <p class="login-footer-text">
+                    Don't have an account?
+                    <a href="#" class="login-footer-link">Contact Administrator</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+
+                // Hide any previous messages
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
+
+                // Simple validation - you can replace this with actual authentication
+                if (username && password) {
+                    // Simulate login process
+                    successMessage.style.display = 'block';
+
+                    // Redirect to dashboard after successful login
+                    setTimeout(function() {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                } else {
+                    errorMessage.style.display = 'block';
+                }
+            });
+
+            // Add focus effects
+            const inputs = document.querySelectorAll('.form-input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('focused');
+                });
+
+                input.addEventListener('blur', function() {
+                    this.parentElement.classList.remove('focused');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

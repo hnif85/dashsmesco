@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard SMESCO - Referral Code Analytics</title>
+    <style>
+        :root {
+            --color-bg-primary: #0a0a0a;
+            --color-bg-secondary: #141414;
+            --color-bg-card: #1a1a1a;
+            --color-text-primary: #ffffff;
+            --color-text-secondary: #a0a0a0;
+            --color-text-tertiary: #707070;
+            --color-border: #2a2a2a;
+            --color-accent-cyan: #06b6d4;
+            --color-accent-green: #22c55e;
+            --color-accent-red: #ef4444;
+            --color-accent-purple: #a855f7;
+            --color-accent-orange: #f97316;
+            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            font-family: var(--font-family);
+            line-height: 1.4;
+            overflow-x: hidden;
+        }
+
+        .main-content {
+            padding: 20px 24px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 13px;
+            color: var(--color-text-secondary);
+        }
+
+        /* Charts Grid - 3 columns */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .chart-card {
+            background-color: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .chart-card h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--color-text-primary);
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 280px;
+            position: relative;
+        }
+
+        .growth-chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 16px;
+            padding: 12px;
+            background-color: var(--color-bg-secondary);
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--color-text-secondary);
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 3px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        /* Pie Chart Card */
+        .pie-chart-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pie-chart-card .stat-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--color-text-tertiary);
+            margin-bottom: 12px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .pie-chart {
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .mini-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-top: 12px;
+            width: 100%;
+        }
+
+        .mini-legend .legend-item {
+            font-size: 10px;
+            justify-content: center;
+        }
+
+        .mini-legend .legend-color {
+            width: 8px;
+            height: 8px;
+        }
+
+        /* Stats Row - Horizontal Layout */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            padding: 20px;
+            background-color: var(--color-bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--color-border);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-2px);
+            border-color: var(--color-accent-cyan);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--color-text-tertiary);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 300;
+            letter-spacing: -0.5px;
+            color: var(--color-text-primary);
+            margin-bottom: 6px;
+        }
+
+        .stat-change {
+            font-size: 11px;
+            color: var(--color-text-secondary);
+        }
+
+        .stat-change.positive {
+            color: var(--color-accent-green);
+        }
+
+        /* Tabs Section */
+        .tabs-section {
+            margin-top: 20px;
+        }
+
+        .tabs-container {
+            background-color: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid var(--color-border);
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .tabs-header::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-button {
+            padding: 14px 20px;
+            background: none;
+            border: none;
+            color: var(--color-text-tertiary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+        }
+
+        .tab-button:hover {
+            color: var(--color-text-secondary);
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .tab-button.active {
+            color: var(--color-text-primary);
+            border-bottom-color: var(--color-text-primary);
+        }
+
+        .tab-button .count {
+            display: inline-block;
+            margin-left: 6px;
+            padding: 2px 8px;
+            background-color: var(--color-bg-secondary);
+            border-radius: 10px;
+            font-size: 11px;
+        }
+
+        .tab-button.active .count {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-panel {
+            display: none;
+            padding: 20px;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* Table Styles */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            padding: 10px 14px;
+            text-align: left;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--color-text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        td {
+            padding: 12px 14px;
+            font-size: 13px;
+            border-bottom: 1px solid rgba(42, 42, 42, 0.5);
+        }
+
+        tbody tr {
+            transition: background-color 0.2s;
+        }
+
+        tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .app-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 500;
+            margin-right: 3px;
+            margin-bottom: 3px;
+            border: 1px solid;
+        }
+
+        .app-badge.active {
+            border-color: var(--color-accent-green);
+            background-color: rgba(34, 197, 94, 0.1);
+            color: var(--color-accent-green);
+        }
+
+        .app-badge.inactive {
+            border-color: var(--color-text-tertiary);
+            background-color: rgba(112, 112, 112, 0.1);
+            color: var(--color-text-tertiary);
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--color-accent-green);
+        }
+
+        .status-dot.inactive {
+            background-color: var(--color-text-tertiary);
+        }
+
+        .number {
+            font-variant-numeric: tabular-nums;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 3px;
+            background-color: var(--color-border);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-accent-cyan), var(--color-accent-green));
+            transition: width 0.3s;
+        }
+
+        a {
+            color: var(--color-text-primary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: var(--color-accent-cyan);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .charts-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .pie-chart-card {
+                grid-column: span 2;
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 16px;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pie-chart-card {
+                grid-column: span 1;
+            }
+
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <h1>Dashboard SMESCO</h1>
+            <p>Referral Code Analytics & User Management</p>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <!-- User Growth Chart -->
+            <div class="chart-card">
+                <h3>Grafik Pertumbuhan User</h3>
+                <div class="chart-container">
+                    <svg id="userGrowthChart" width="100%" height="100%" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid meet"></svg>
+                </div>
+                <div class="growth-chart-legend" id="userLegend"></div>
+            </div>
+
+            <!-- Revenue & Commission Chart -->
+            <div class="chart-card">
+                <h3>Grafik Pertumbuhan Revenue & Komisi</h3>
+                <div class="chart-container">
+                    <svg id="financialGrowthChart" width="100%" height="100%" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid meet"></svg>
+                </div>
+                <div class="growth-chart-legend" id="financialLegend"></div>
+            </div>
+
+            <!-- Pie Chart -->
+            <div class="chart-card pie-chart-card">
+                <div class="stat-label">User per Aplikasi</div>
+                <svg class="pie-chart" viewBox="0 0 200 200" width="140" height="140"></svg>
+                <div class="mini-legend"></div>
+            </div>
+        </div>
+
+        <!-- Stats Row - Horizontal -->
+        <div class="stats-row">
+            <div class="stat-item">
+                <div class="stat-label">Jumlah User</div>
+                <div class="stat-value">1,247</div>
+                <div class="stat-change positive">↑ 12% bulan lalu</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Daily Active</div>
+                <div class="stat-value">342</div>
+                <div class="stat-change">20.4% conversion</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Total Komisi</div>
+                <div class="stat-value">Rp 125K</div>
+                <div class="stat-change positive">↑ 15% bulan lalu</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Total Revenue</div>
+                <div class="stat-value">Rp 1.25M</div>
+                <div class="stat-change positive">↑ 8% bulan lalu</div>
+            </div>
+        </div>
+
+        <!-- Tabs Section -->
+        <div class="tabs-section">
+            <div class="tabs-container">
+                <div class="tabs-header">
+                    <button class="tab-button active" onclick="switchTab(event, 'users')">
+                        Daftar User
+                        <span class="count">1,247</span>
+                    </button>
+                    <button class="tab-button" onclick="switchTab(event, 'apps')">
+                        Statistik Aplikasi
+                        <span class="count">13</span>
+                    </button>
+                    <button class="tab-button" onclick="switchTab(event, 'industries')">
+                        Statistik Industri
+                        <span class="count">5</span>
+                    </button>
+                </div>
+
+                <div class="tabs-content">
+                    <!-- Tab 1: Users -->
+                    <div id="users" class="tab-panel active">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Industri</th>
+                                        <th>Aplikasi</th>
+                                        <th>Last Login</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong><a href="detail_user.html">Ahmad Rahman</a></strong></td>
+                                        <td>Manufacturing</td>
+                                        <td>
+                                            <span class="app-badge active">SmartWhiz</span>
+                                            <span class="app-badge active">FinanceWhiz</span>
+                                            <span class="app-badge inactive">SecureWhiz</span>
+                                        </td>
+                                        <td>2025-11-04 14:30</td>
+                                        <td>
+                                            <span class="status">
+                                                <span class="status-dot"></span>
+                                                Active
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong><a href="#">Sari Dewi</a></strong></td>
+                                        <td>Retail</td>
+                                        <td>
+                                            <span class="app-badge active">SalesWhiz</span>
+                                            <span class="app-badge active">CrmWhiz</span>
+                                        </td>
+                                        <td>2025-11-04 13:15</td>
+                                        <td>
+                                            <span class="status">
+                                                <span class="status-dot"></span>
+                                                Active
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong><a href="#">Budi Santoso</a></strong></td>
+                                        <td>F&B</td>
+                                        <td>
+                                            <span class="app-badge active">PostWhiz</span>
+                                            <span class="app-badge active">ReportWhiz</span>
+                                            <span class="app-badge active">CreateWhiz</span>
+                                        </td>
+                                        <td>2025-11-04 12:45</td>
+                                        <td>
+                                            <span class="status">
+                                                <span class="status-dot"></span>
+                                                Active
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong><a href="#">Maya Putri</a></strong></td>
+                                        <td>Tech</td>
+                                        <td>
+                                            <span class="app-badge inactive">FinanceWhiz</span>
+                                            <span class="app-badge inactive">TalentWhiz</span>
+                                            <span class="app-badge inactive">AssistantWhiz</span>
+                                        </td>
+                                        <td>2025-11-03 16:20</td>
+                                        <td>
+                                            <span class="status">
+                                                <span class="status-dot inactive"></span>
+                                                Inactive
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong><a href="#">Rizal Pratama</a></strong></td>
+                                        <td>Services</td>
+                                        <td>
+                                            <span class="app-badge active">AssistantWhiz</span>
+                                            <span class="app-badge active">CreateWhiz</span>
+                                        </td>
+                                        <td>2025-11-03 09:10</td>
+                                        <td>
+                                            <span class="status">
+                                                <span class="status-dot inactive"></span>
+                                                Inactive
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong><a href="#">Nina Sari</a></strong></td>
+                                        <td>Manufacturing</td>
+                                        <td>
+                                            <span class="app-badge active">SmartWhiz</span>
+                                            <span class="app-badge active">SmeWhiz</span>
+                                            <span class="app-badge active">FinanceWhiz</span>
+                                        </td>
+                                        <td>2025-11-04 16:05</td>
+                                        <td>
+                                            <span class="status">
+                                                <span class="status-dot"></span>
+                                                Active
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong><a href="#">Dika Nugraha</a></strong></td>
+                                        <td>Retail</td>
+                                        <td>
+                                            <span class="app-badge active">SalesWhiz</span>
+                                            <span class="app-badge active">CrmWhiz</span>
+                                        </td>
+                                        <td>2025-11-04 11:22</td>
+                                        <td>
+                                            <span class="status">
+                                                <span class="status-dot"></span>
+                                                Active
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Apps -->
+                    <div id="apps" class="tab-panel">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Nama Aplikasi</th>
+                                        <th>Pengguna Berbayar</th>
+                                        <th>Pengguna Free</th>
+                                        <th>Total Active Users</th>
+                                        <th>Conversion Rate</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong><a href="detail_app.html">AssistantWhiz</a></strong></td>
+                                        <td><span class="number">200</span></td>
+                                        <td><span class="number">50</span></td>
+                                        <td><span class="number">240</span></td>
+                                        <td>
+                                            75.0%
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 75%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>CreateWhiz</strong></td>
+                                        <td><span class="number">180</span></td>
+                                        <td><span class="number">40</span></td>
+                                        <td><span class="number">210</span></td>
+                                        <td>
+                                            80.0%
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 80%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>CrmWhiz</strong></td>
+                                        <td><span class="number">300</span></td>
+                                        <td><span class="number">100</span></td>
+                                        <td><span class="number">380</span></td>
+                                        <td>
+                                            70.0%
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 70%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>FinanceWhiz.AI</strong></td>
+                                        <td><span class="number">250</span></td>
+                                        <td><span class="number">60</span></td>
+                                        <td><span class="number">290</span></td>
+                                        <td>
+                                            82.0%
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 82%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>KOLWhiz</strong></td>
+                                        <td><span class="number">150</span></td>
+                                        <td><span class="number">30</span></td>
+                                        <td><span class="number">170</span></td>
+                                        <td>
+                                            85.0%
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 85%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Legalwhiz</strong></td>
+                                        <td><span class="number">120</span></td>
+                                        <td><span class="number">20</span></td>
+                                        <td><span class="number">130</span></td>
+                                        <td>
+                                            88.0%
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 88%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>PostWhiz</strong></td>
+                                        <td><span class="number">180</span></td>
+                                        <td><span class="number">45</span></td>
+                                        <td><span class="number">215</span></td>
+                                        <td>
+                                            78.0%
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 78%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>ReportWhiz</strong></td>
+                                        <td><span class="number">220</span></td>
+                                        <td><span class="number">55</span></td>
+                                        <td><span class="number">255</span></td>
+                                        <td>
+                                            80.0%
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 80%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SalesWhiz</strong></td>
+                                        <td><span class="number">280</span></td>
+                                        <td><span class="number">70</span></td>
+                                        <td><span class="number">330</span></td>
+                                        <td>
+                                            76.0%
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 76%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SecureWhiz</strong></td>
+                                        <td><span class="number">190</span></td>
+                                        <td><span class="number">40</span></td>
+                                        <td><span class="number">220</span></td>
+                                        <td>
+                                            83.0%
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 83%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SmartWhiz</strong></td>
+                                        <td><span class="number">350</span></td>
+                                        <td><span class="number">90</span></td>
+                                        <td><span class="number">410</span></td>
+                                        <td>
+                                            81.0%
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 81%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SmeWhiz</strong></td>
+                                        <td><span class="number">160</span></td>
+                                        <td><span class="number">35</span></td>
+                                        <td><span class="number">185</span></td>
+                                        <td>
+                                            84.0%
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 84%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>TalentWhiz.ai</strong></td>
+                                        <td><span class="number">140</span></td>
+                                        <td><span class="number">25</span></td>
+                                        <td><span class="number">155</span></td>
+                                        <td>
+                                            87.0%
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 87%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Industries -->
+                    <div id="industries" class="tab-panel">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Industri</th>
+                                        <th>Jumlah User Free</th>
+                                        <th>Jumlah User Paid</th>
+                                        <th>Jumlah User Aktif</th>
+                                        <th>Jumlah User Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong><a href="detail_industri.html">Manufacturing</a></strong></td>
+                                        <td><span class="number">185</span></td>
+                                        <td><span class="number">135</span></td>
+                                        <td><span class="number">320</span></td>
+                                        <td><span class="number">385</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong><a href="detail_industri.html">Retail</a></strong></td>
+                                        <td><span class="number">148</span></td>
+                                        <td><span class="number">102</span></td>
+                                        <td><span class="number">250</span></td>
+                                        <td><span class="number">298</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong><a href="detail_industri.html">F&B</a></strong></td>
+                                        <td><span class="number">134</span></td>
+                                        <td><span class="number">86</span></td>
+                                        <td><span class="number">220</span></td>
+                                        <td><span class="number">267</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong><a href="detail_industri.html">Tech</a></strong></td>
+                                        <td><span class="number">78</span></td>
+                                        <td><span class="number">52</span></td>
+                                        <td><span class="number">130</span></td>
+                                        <td><span class="number">156</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong><a href="detail_industri.html">Services</a></strong></td>
+                                        <td><span class="number">71</span></td>
+                                        <td><span class="number">44</span></td>
+                                        <td><span class="number">115</span></td>
+                                        <td><span class="number">141</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching function
+        function switchTab(event, tabId) {
+            const buttons = document.querySelectorAll('.tab-button');
+            const panels = document.querySelectorAll('.tab-panel');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+            panels.forEach(panel => panel.classList.remove('active'));
+
+            event.currentTarget.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Data
+        const appData = [
+            { name: 'SmartWhiz', users: 410, color: '#06b6d4' },
+            { name: 'CrmWhiz', users: 380, color: '#f97316' },
+            { name: 'SalesWhiz', users: 330, color: '#22c55e' },
+            { name: 'FinanceWhiz', users: 290, color: '#a855f7' },
+            { name: 'AssistantWhiz', users: 240, color: '#ef4444' },
+            { name: 'Others', users: 597, color: '#666666' }
+        ];
+
+        const growthData = [
+            { month: 'Jan', total: 450, paid: 80, free: 370, commission: 45000, revenue: 450000 },
+            { month: 'Feb', total: 820, paid: 165, free: 655, commission: 82000, revenue: 820000 },
+            { month: 'Mar', total: 680, paid: 140, free: 540, commission: 68000, revenue: 680000 },
+            { month: 'Apr', total: 1250, paid: 320, free: 930, commission: 125000, revenue: 1250000 },
+            { month: 'May', total: 950, paid: 230, free: 720, commission: 95000, revenue: 950000 },
+            { month: 'Jun', total: 1580, paid: 420, free: 1160, commission: 158000, revenue: 1580000 },
+            { month: 'Jul', total: 1350, paid: 380, free: 970, commission: 135000, revenue: 1350000 },
+            { month: 'Aug', total: 1820, paid: 550, free: 1270, commission: 182000, revenue: 1820000 },
+            { month: 'Sep', total: 1650, paid: 490, free: 1160, commission: 165000, revenue: 1650000 },
+            { month: 'Oct', total: 2100, paid: 680, free: 1420, commission: 210000, revenue: 2100000 },
+            { month: 'Nov', total: 1900, paid: 610, free: 1290, commission: 190000, revenue: 1900000 }
+        ];
+
+        // Create Pie Chart
+        function createPieChart() {
+            const svg = document.querySelector('.pie-chart');
+            const miniLegend = document.querySelector('.mini-legend');
+
+            if (!svg) return;
+
+            svg.innerHTML = '';
+
+            const total = appData.reduce((sum, app) => sum + app.users, 0);
+            let cumulativeAngle = 0;
+
+            appData.forEach((app, index) => {
+                const percentage = app.users / total;
+                const angle = percentage * 360;
+
+                if (percentage > 0) {
+                    const startAngle = cumulativeAngle;
+                    const endAngle = cumulativeAngle + angle;
+
+                    const x1 = 100 + 90 * Math.cos((startAngle * Math.PI) / 180);
+                    const y1 = 100 + 90 * Math.sin((startAngle * Math.PI) / 180);
+                    const x2 = 100 + 90 * Math.cos((endAngle * Math.PI) / 180);
+                    const y2 = 100 + 90 * Math.sin((endAngle * Math.PI) / 180);
+
+                    const largeArcFlag = angle > 180 ? 1 : 0;
+
+                    const pathData = [
+                        `M 100 100`,
+                        `L ${x1} ${y1}`,
+                        `A 90 90 0 ${largeArcFlag} 1 ${x2} ${y2}`,
+                        `Z`
+                    ].join(' ');
+
+                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    path.setAttribute('d', pathData);
+                    path.setAttribute('fill', app.color);
+                    path.setAttribute('stroke', '#0a0a0a');
+                    path.setAttribute('stroke-width', '2');
+
+                    svg.appendChild(path);
+
+                    cumulativeAngle += angle;
+                }
+
+                // Mini legend (show only top 3)
+                if (miniLegend && index < 3) {
+                    const legendItem = document.createElement('div');
+                    legendItem.className = 'legend-item';
+
+                    const colorBox = document.createElement('div');
+                    colorBox.className = 'legend-color';
+                    colorBox.style.backgroundColor = app.color;
+
+                    const label = document.createElement('span');
+                    label.className = 'legend-label';
+                    label.textContent = app.name.length > 10 ? app.name.substring(0, 10) + '...' : app.name;
+
+                    legendItem.appendChild(colorBox);
+                    legendItem.appendChild(label);
+
+                    miniLegend.appendChild(legendItem);
+                }
+            });
+        }
+
+        // Draw User Growth Chart
+        function drawUserGrowthChart() {
+            const svg = document.getElementById('userGrowthChart');
+            if (!svg) return;
+
+            const width = 400;
+            const height = 200;
+            const margin = { top: 20, right: 20, bottom: 30, left: 50 };
+            const innerWidth = width - margin.left - margin.right;
+            const innerHeight = height - margin.top - margin.bottom;
+
+            const maxValue = Math.max(...growthData.map(d => d.total));
+            const xStep = innerWidth / (growthData.length - 1);
+
+            const xScale = (index) => margin.left + (index * xStep);
+            const yScale = (value) => margin.top + innerHeight - (value / maxValue) * innerHeight;
+
+            svg.innerHTML = '';
+
+            // Draw grid lines
+            for (let i = 0; i <= 4; i++) {
+                const y = margin.top + (innerHeight / 4) * i;
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', margin.left);
+                line.setAttribute('y1', y);
+                line.setAttribute('x2', width - margin.right);
+                line.setAttribute('y2', y);
+                line.setAttribute('stroke', '#2a2a2a');
+                line.setAttribute('stroke-width', '1');
+                line.setAttribute('opacity', '0.3');
+                svg.appendChild(line);
+
+                // Y-axis labels
+                const value = Math.round((maxValue / 4) * (4 - i));
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', margin.left - 10);
+                text.setAttribute('y', y + 4);
+                text.setAttribute('text-anchor', 'end');
+                text.setAttribute('fill', '#707070');
+                text.setAttribute('font-size', '9px');
+                text.textContent = value;
+                svg.appendChild(text);
+            }
+
+            // Draw lines
+            const lines = [
+                { key: 'total', color: '#3b82f6', label: 'Total Users' },
+                { key: 'paid', color: '#22c55e', label: 'Paid Users' },
+                { key: 'free', color: '#ef4444', label: 'Free Users' }
+            ];
+
+            lines.forEach(line => {
+                const points = growthData.map((d, i) => ({
+                    x: xScale(i),
+                    y: yScale(d[line.key])
+                }));
+
+                // Create ultra-smooth curve using cubic bezier
+                let pathData = `M ${points[0].x} ${points[0].y}`;
+                for (let i = 0; i < points.length - 1; i++) {
+                    const curr = points[i];
+                    const next = points[i + 1];
+                    const next2 = points[i + 2] || next;
+
+                    // Calculate control points for smooth cubic bezier
+                    const cp1x = curr.x + (next.x - (i > 0 ? points[i - 1].x : curr.x)) * 0.25;
+                    const cp1y = curr.y;
+                    const cp2x = next.x - (next2.x - curr.x) * 0.25;
+                    const cp2y = next.y;
+
+                    pathData += ` C ${cp1x} ${cp1y} ${cp2x} ${cp2y} ${next.x} ${next.y}`;
+                }
+
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', pathData);
+                path.setAttribute('fill', 'none');
+                path.setAttribute('stroke', line.color);
+                path.setAttribute('stroke-width', '2.5');
+                path.setAttribute('stroke-linecap', 'round');
+                svg.appendChild(path);
+
+                // Draw points
+                points.forEach(p => {
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', p.x);
+                    circle.setAttribute('cy', p.y);
+                    circle.setAttribute('r', '2.5');
+                    circle.setAttribute('fill', line.color);
+                    circle.setAttribute('stroke', '#0a0a0a');
+                    circle.setAttribute('stroke-width', '1');
+                    svg.appendChild(circle);
+                });
+            });
+
+            // X-axis labels
+            growthData.forEach((d, i) => {
+                if (i % 2 === 0) {
+                    const x = xScale(i);
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', x);
+                    text.setAttribute('y', height - margin.bottom + 15);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('fill', '#707070');
+                    text.setAttribute('font-size', '9px');
+                    text.textContent = d.month;
+                    svg.appendChild(text);
+                }
+            });
+        }
+
+        // Draw Financial Growth Chart
+        function drawFinancialGrowthChart() {
+            const svg = document.getElementById('financialGrowthChart');
+            if (!svg) return;
+
+            const width = 400;
+            const height = 200;
+            const margin = { top: 20, right: 20, bottom: 30, left: 55 };
+            const innerWidth = width - margin.left - margin.right;
+            const innerHeight = height - margin.top - margin.bottom;
+
+            const maxValue = Math.max(...growthData.map(d => Math.max(d.commission, d.revenue)));
+            const xStep = innerWidth / (growthData.length - 1);
+
+            const xScale = (index) => margin.left + (index * xStep);
+            const yScale = (value) => margin.top + innerHeight - (value / maxValue) * innerHeight;
+
+            svg.innerHTML = '';
+
+            // Draw grid lines
+            for (let i = 0; i <= 4; i++) {
+                const y = margin.top + (innerHeight / 4) * i;
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', margin.left);
+                line.setAttribute('y1', y);
+                line.setAttribute('x2', width - margin.right);
+                line.setAttribute('y2', y);
+                line.setAttribute('stroke', '#2a2a2a');
+                line.setAttribute('stroke-width', '1');
+                line.setAttribute('opacity', '0.3');
+                svg.appendChild(line);
+
+                // Y-axis labels
+                const value = Math.round((maxValue / 4) * (4 - i) / 1000) + 'K';
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', margin.left - 10);
+                text.setAttribute('y', y + 4);
+                text.setAttribute('text-anchor', 'end');
+                text.setAttribute('fill', '#707070');
+                text.setAttribute('font-size', '9px');
+                text.textContent = value;
+                svg.appendChild(text);
+            }
+
+            // Draw lines
+            const lines = [
+                { key: 'commission', color: '#f97316', label: 'Commission' },
+                { key: 'revenue', color: '#a855f7', label: 'Revenue' }
+            ];
+
+            lines.forEach(line => {
+                const points = growthData.map((d, i) => ({
+                    x: xScale(i),
+                    y: yScale(d[line.key])
+                }));
+
+                // Create ultra-smooth curve using cubic bezier
+                let pathData = `M ${points[0].x} ${points[0].y}`;
+                for (let i = 0; i < points.length - 1; i++) {
+                    const curr = points[i];
+                    const next = points[i + 1];
+                    const next2 = points[i + 2] || next;
+
+                    // Calculate control points for smooth cubic bezier
+                    const cp1x = curr.x + (next.x - (i > 0 ? points[i - 1].x : curr.x)) * 0.25;
+                    const cp1y = curr.y;
+                    const cp2x = next.x - (next2.x - curr.x) * 0.25;
+                    const cp2y = next.y;
+
+                    pathData += ` C ${cp1x} ${cp1y} ${cp2x} ${cp2y} ${next.x} ${next.y}`;
+                }
+
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', pathData);
+                path.setAttribute('fill', 'none');
+                path.setAttribute('stroke', line.color);
+                path.setAttribute('stroke-width', '2.5');
+                path.setAttribute('stroke-linecap', 'round');
+                svg.appendChild(path);
+
+                // Draw points
+                points.forEach(p => {
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', p.x);
+                    circle.setAttribute('cy', p.y);
+                    circle.setAttribute('r', '2.5');
+                    circle.setAttribute('fill', line.color);
+                    circle.setAttribute('stroke', '#0a0a0a');
+                    circle.setAttribute('stroke-width', '1');
+                    svg.appendChild(circle);
+                });
+            });
+
+            // X-axis labels
+            growthData.forEach((d, i) => {
+                if (i % 2 === 0) {
+                    const x = xScale(i);
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', x);
+                    text.setAttribute('y', height - margin.bottom + 15);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('fill', '#707070');
+                    text.setAttribute('font-size', '9px');
+                    text.textContent = d.month;
+                    svg.appendChild(text);
+                }
+            });
+        }
+
+        // Create legends
+        function createUserChartLegend() {
+            const legendContainer = document.getElementById('userLegend');
+            if (!legendContainer) return;
+
+            const lines = [
+                { color: '#3b82f6', label: 'Total Users' },
+                { color: '#22c55e', label: 'Paid Users' },
+                { color: '#ef4444', label: 'Free Users' }
+            ];
+
+            legendContainer.innerHTML = '';
+
+            lines.forEach(line => {
+                const legendItem = document.createElement('div');
+                legendItem.className = 'legend-item';
+
+                const colorBox = document.createElement('div');
+                colorBox.className = 'legend-color';
+                colorBox.style.backgroundColor = line.color;
+
+                const label = document.createElement('span');
+                label.textContent = line.label;
+
+                legendItem.appendChild(colorBox);
+                legendItem.appendChild(label);
+                legendContainer.appendChild(legendItem);
+            });
+        }
+
+        function createFinancialChartLegend() {
+            const legendContainer = document.getElementById('financialLegend');
+            if (!legendContainer) return;
+
+            const lines = [
+                { color: '#f97316', label: 'Commission' },
+                { color: '#a855f7', label: 'Revenue' }
+            ];
+
+            legendContainer.innerHTML = '';
+
+            lines.forEach(line => {
+                const legendItem = document.createElement('div');
+                legendItem.className = 'legend-item';
+
+                const colorBox = document.createElement('div');
+                colorBox.className = 'legend-color';
+                colorBox.style.backgroundColor = line.color;
+
+                const label = document.createElement('span');
+                label.textContent = line.label;
+
+                legendItem.appendChild(colorBox);
+                legendItem.appendChild(label);
+                legendContainer.appendChild(legendItem);
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createPieChart();
+            drawUserGrowthChart();
+            drawFinancialGrowthChart();
+            createUserChartLegend();
+            createFinancialChartLegend();
+        });
+
+        // Redraw on resize
+        window.addEventListener('resize', function() {
+            drawUserGrowthChart();
+            drawFinancialGrowthChart();
+        });
+    </script>
+</body>
+</html>

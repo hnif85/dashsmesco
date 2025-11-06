@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Industri - Dashboard SMESCO</title>
+    <style>
+        :root {
+            /* Colors */
+            --color-bg-primary: #000000;
+            --color-bg-light: #0a0a0a;
+            --color-bg-card: #111111;
+            --color-bg-card-hover: #1a1a1a;
+            --color-bg-table-header: #050505;
+            --color-text-primary: #ffffff;
+            --color-text-secondary: #999999;
+            --color-text-tertiary: #666666;
+            --color-text-muted: #4a4a4a;
+            --color-border-default: #1a1a1a;
+            --color-border-hover: #333333;
+            --color-border-active: #444444;
+            --color-accent-cyan: #06b6d4;
+            --color-accent-green: #22c55e;
+            --color-accent-red: #ef4444;
+
+            /* Typography */
+            --font-family-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            --font-family-mono: 'Courier New', monospace;
+            --font-size-xs: 11px;
+            --font-size-sm: 12px;
+            --font-size-base: 14px;
+            --font-size-md: 15px;
+            --font-size-lg: 16px;
+            --font-size-xl: 18px;
+            --font-size-2xl: 20px;
+            --font-size-3xl: 24px;
+            --font-size-4xl: 32px;
+            --font-size-5xl: 36px;
+            --font-weight-light: 300;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+            --line-height-tight: 1.2;
+            --line-height-normal: 1.5;
+            --line-height-relaxed: 1.75;
+            --letter-spacing-tight: -0.5px;
+            --letter-spacing-normal: 0;
+            --letter-spacing-wide: 0.5px;
+
+            /* Spacing */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 12px;
+            --spacing-base: 16px;
+            --spacing-lg: 20px;
+            --spacing-xl: 24px;
+            --spacing-2xl: 32px;
+            --spacing-3xl: 40px;
+            --spacing-4xl: 48px;
+            --spacing-5xl: 64px;
+
+            /* Border Radius */
+            --border-radius-sm: 4px;
+            --border-radius-base: 6px;
+            --border-radius-md: 8px;
+            --border-radius-lg: 12px;
+            --border-radius-xl: 16px;
+            --border-radius-full: 9999px;
+
+            /* Transitions */
+            --transition-fast: 150ms ease;
+            --transition-base: 200ms ease;
+            --transition-slow: 300ms ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            font-family: var(--font-family-primary);
+            padding: 0;
+            overflow-x: hidden;
+            line-height: var(--line-height-normal);
+        }
+
+        .header {
+            background-color: var(--color-bg-light);
+            border-bottom: 1px solid var(--color-border-default);
+            padding: var(--spacing-xl) var(--spacing-4xl);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .back-button {
+            background: none;
+            border: 1px solid var(--color-border-hover);
+            color: var(--color-text-primary);
+            padding: var(--spacing-sm) var(--spacing-base);
+            border-radius: var(--border-radius-base);
+            cursor: pointer;
+            font-size: var(--font-size-base);
+            transition: all var(--transition-base);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .back-button:hover {
+            background-color: var(--color-bg-card-hover);
+            border-color: var(--color-border-active);
+        }
+
+        .header-content {
+            flex: 1;
+        }
+
+        .header h1 {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-medium);
+            letter-spacing: var(--letter-spacing-tight);
+            color: var(--color-text-primary);
+        }
+
+        .header p {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-tertiary);
+            margin-top: var(--spacing-xs);
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: var(--spacing-4xl);
+        }
+
+        /* Industry Overview Section */
+        .industry-overview {
+            background: linear-gradient(135deg, var(--color-bg-light) 0%, var(--color-bg-card) 100%);
+            border: 1px solid var(--color-border-default);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-2xl);
+            margin-bottom: var(--spacing-3xl);
+        }
+
+        .industry-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .industry-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--border-radius-full);
+            background: linear-gradient(135deg, var(--color-border-hover), #666);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-light);
+        }
+
+        .industry-info h2 {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--spacing-xs);
+            color: var(--color-text-primary);
+        }
+
+        .industry-meta {
+            display: flex;
+            gap: var(--spacing-base);
+            font-size: var(--font-size-sm);
+            color: var(--color-text-tertiary);
+        }
+
+        .industry-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-xl);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .stat-label {
+            font-size: var(--font-size-xs);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-wide);
+            color: var(--color-text-tertiary);
+        }
+
+        .stat-value {
+            font-size: var(--font-size-md);
+            font-weight: var(--font-weight-normal);
+            color: var(--color-text-primary);
+        }
+
+        /* Sections */
+        .section {
+            background-color: var(--color-bg-light);
+            border: 1px solid var(--color-border-default);
+            border-radius: var(--border-radius-lg);
+            margin-bottom: var(--spacing-3xl);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: var(--spacing-xl) var(--spacing-2xl);
+            border-bottom: 1px solid var(--color-border-default);
+        }
+
+        .section-header h3 {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-medium);
+            color: var(--color-text-primary);
+        }
+
+        .section-header p {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-tertiary);
+            margin-top: var(--spacing-xs);
+        }
+
+        .section-content {
+            padding: 0;
+        }
+
+        /* Table Styles */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: var(--color-bg-table-header);
+        }
+
+        th {
+            padding: var(--spacing-base) var(--spacing-lg);
+            text-align: left;
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-medium);
+            color: var(--color-text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-wide);
+            border-bottom: 1px solid var(--color-border-default);
+        }
+
+        td {
+            padding: var(--spacing-lg);
+            font-size: var(--font-size-base);
+            border-bottom: 1px solid #0f0f0f;
+        }
+
+        tbody tr {
+            transition: background-color var(--transition-base);
+        }
+
+        tbody tr:hover {
+            background-color: #0f0f0f;
+        }
+
+        /* Numbers */
+        .number {
+            font-variant-numeric: tabular-nums;
+            font-weight: var(--font-weight-medium);
+        }
+
+        .number.large {
+            font-size: var(--font-size-lg);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: var(--spacing-xs);
+            background-color: var(--color-border-default);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: var(--spacing-sm);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-border-hover), #666);
+            transition: width var(--transition-slow);
+        }
+
+        /* Link Styles */
+        a {
+            color: var(--color-text-primary);
+            text-decoration: none;
+            transition: color var(--transition-base);
+        }
+
+        a:hover {
+            color: #ccc;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: var(--spacing-lg);
+            }
+
+            .header {
+                padding: var(--spacing-lg);
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .industry-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .industry-stats {
+                grid-template-columns: 1fr;
+            }
+
+            th, td {
+                padding: var(--spacing-md);
+                font-size: var(--font-size-sm);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <a href="index.html" class="back-button">
+            ← Kembali
+        </a>
+        <div class="header-content">
+            <h1>Detail Industri</h1>
+            <p id="industry-description">Informasi lengkap tentang industri dan aplikasi yang digunakan</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Industry Overview Section -->
+        <div class="industry-overview">
+            <div class="industry-header">
+                <div class="industry-icon" id="industry-icon">M</div>
+                <div class="industry-info">
+                    <h2 id="industry-name">Manufacturing</h2>
+                    
+                </div>
+            </div>
+            <div class="industry-stats">
+                <div class="stat-item">
+                    <div class="stat-label">Total Users</div>
+                    <div class="stat-value" id="total-users">385</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Paid Users</div>
+                    <div class="stat-value" id="paid-users">320</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Free Users</div>
+                    <div class="stat-value" id="free-users">65</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Daily Active Users</div>
+                    <div class="stat-value" id="daily-active-users">280</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Applications Section -->
+        <div class="section">
+            <div class="section-header">
+                <h3>Aplikasi dalam Industri</h3>
+                <p>Daftar aplikasi yang digunakan di industri ini</p>
+            </div>
+            <div class="section-content">
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama Aplikasi</th>
+                                <th>Total Users</th>
+                                <th>Paid Users</th>
+                                <th>Free Users</th>
+                                <th>Daily Active Users</th>
+                            </tr>
+                        </thead>
+                        <tbody id="apps-table-body">
+                            <!-- Apps will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get industry name from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const industryName = urlParams.get('industry') || 'Manufacturing';
+
+        // Industry data
+        const industryData = {
+            'Manufacturing': {
+                name: 'Manufacturing',
+                icon: 'M',
+                description: 'Industri manufaktur dan produksi',
+                totalUsers: 385,
+                paidUsers: 320,
+                freeUsers: 65,
+                dailyActiveUsers: 280,
+                apps: [
+                    { name: 'SmartWhiz', totalUsers: 200, paidUsers: 180, freeUsers: 20, dailyActive: 160 },
+                    { name: 'SmeWhiz', totalUsers: 185, paidUsers: 140, freeUsers: 45, dailyActive: 120 }
+                ]
+            },
+            'Retail': {
+                name: 'Retail',
+                icon: 'R',
+                description: 'Industri ritel dan perdagangan',
+                totalUsers: 298,
+                paidUsers: 250,
+                freeUsers: 48,
+                dailyActiveUsers: 220,
+                apps: [
+                    { name: 'SalesWhiz', totalUsers: 180, paidUsers: 150, freeUsers: 30, dailyActive: 130 },
+                    { name: 'CrmWhiz', totalUsers: 118, paidUsers: 100, freeUsers: 18, dailyActive: 90 }
+                ]
+            },
+            'F&B': {
+                name: 'F&B',
+                icon: 'F',
+                description: 'Industri makanan dan minuman',
+                totalUsers: 267,
+                paidUsers: 220,
+                freeUsers: 47,
+                dailyActiveUsers: 190,
+                apps: [
+                    { name: 'PostWhiz', totalUsers: 140, paidUsers: 120, freeUsers: 20, dailyActive: 100 },
+                    { name: 'ReportWhiz', totalUsers: 127, paidUsers: 100, freeUsers: 27, dailyActive: 90 }
+                ]
+            },
+            'Tech': {
+                name: 'Tech',
+                icon: 'T',
+                description: 'Industri teknologi dan startup',
+                totalUsers: 156,
+                paidUsers: 130,
+                freeUsers: 26,
+                dailyActiveUsers: 110,
+                apps: [
+                    { name: 'FinanceWhiz.AI', totalUsers: 95, paidUsers: 80, freeUsers: 15, dailyActive: 70 },
+                    { name: 'TalentWhiz.ai', totalUsers: 61, paidUsers: 50, freeUsers: 11, dailyActive: 40 }
+                ]
+            },
+            'Services': {
+                name: 'Services',
+                icon: 'S',
+                description: 'Industri jasa dan konsultasi',
+                totalUsers: 141,
+                paidUsers: 115,
+                freeUsers: 26,
+                dailyActiveUsers: 100,
+                apps: [
+                    { name: 'AssistantWhiz', totalUsers: 45, paidUsers: 40, freeUsers: 5, dailyActive: 35 },
+                    { name: 'CreateWhiz', totalUsers: 38, paidUsers: 30, freeUsers: 8, dailyActive: 25 },
+                    { name: 'KOLWhiz', totalUsers: 25, paidUsers: 20, freeUsers: 5, dailyActive: 18 },
+                    { name: 'Legalwhiz', totalUsers: 20, paidUsers: 15, freeUsers: 5, dailyActive: 14 },
+                    { name: 'SecureWhiz', totalUsers: 13, paidUsers: 10, freeUsers: 3, dailyActive: 8 }
+                ]
+            }
+        };
+
+        // Get current industry data
+        const currentIndustry = industryData[industryName] || industryData['Manufacturing'];
+
+        // Update page content
+        document.getElementById('industry-name').textContent = currentIndustry.name;
+        document.getElementById('industry-icon').textContent = currentIndustry.icon;
+        document.getElementById('industry-description').textContent = currentIndustry.description;
+        document.getElementById('total-users').textContent = currentIndustry.totalUsers;
+        document.getElementById('paid-users').textContent = currentIndustry.paidUsers;
+        document.getElementById('free-users').textContent = currentIndustry.freeUsers;
+        document.getElementById('daily-active-users').textContent = currentIndustry.dailyActiveUsers;
+
+        // Populate apps table
+        const appsTableBody = document.getElementById('apps-table-body');
+        currentIndustry.apps.forEach(app => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><strong><a href="detail_app.html?app=${app.name}">${app.name}</a></strong></td>
+                <td><span class="number large">${app.totalUsers}</span></td>
+                <td><span class="number">${app.paidUsers}</span></td>
+                <td><span class="number">${app.freeUsers}</span></td>
+                <td><span class="number">${app.dailyActive}</span></td>
+            `;
+            appsTableBody.appendChild(row);
+        });
+    </script>
+</body>
+</html>

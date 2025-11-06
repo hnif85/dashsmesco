@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail User - Dashboard SMESCO</title>
+    <style>
+        :root {
+            /* Colors */
+            --color-bg-primary: #000000;
+            --color-bg-light: #0a0a0a;
+            --color-bg-card: #111111;
+            --color-bg-card-hover: #1a1a1a;
+            --color-bg-table-header: #050505;
+            --color-text-primary: #ffffff;
+            --color-text-secondary: #999999;
+            --color-text-tertiary: #666666;
+            --color-text-muted: #4a4a4a;
+            --color-border-default: #1a1a1a;
+            --color-border-hover: #333333;
+            --color-border-active: #444444;
+            --color-accent-cyan: #06b6d4;
+            --color-accent-green: #22c55e;
+            --color-accent-red: #ef4444;
+
+            /* Typography */
+            --font-family-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            --font-family-mono: 'Courier New', monospace;
+            --font-size-xs: 11px;
+            --font-size-sm: 12px;
+            --font-size-base: 14px;
+            --font-size-md: 15px;
+            --font-size-lg: 16px;
+            --font-size-xl: 18px;
+            --font-size-2xl: 20px;
+            --font-size-3xl: 24px;
+            --font-size-4xl: 32px;
+            --font-size-5xl: 36px;
+            --font-weight-light: 300;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+            --line-height-tight: 1.2;
+            --line-height-normal: 1.5;
+            --line-height-relaxed: 1.75;
+            --letter-spacing-tight: -0.5px;
+            --letter-spacing-normal: 0;
+            --letter-spacing-wide: 0.5px;
+
+            /* Spacing */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 12px;
+            --spacing-base: 16px;
+            --spacing-lg: 20px;
+            --spacing-xl: 24px;
+            --spacing-2xl: 32px;
+            --spacing-3xl: 40px;
+            --spacing-4xl: 48px;
+            --spacing-5xl: 64px;
+
+            /* Border Radius */
+            --border-radius-sm: 4px;
+            --border-radius-base: 6px;
+            --border-radius-md: 8px;
+            --border-radius-lg: 12px;
+            --border-radius-xl: 16px;
+            --border-radius-full: 9999px;
+
+            /* Transitions */
+            --transition-fast: 150ms ease;
+            --transition-base: 200ms ease;
+            --transition-slow: 300ms ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            font-family: var(--font-family-primary);
+            padding: 0;
+            overflow-x: hidden;
+            line-height: var(--line-height-normal);
+        }
+
+        .header {
+            background-color: var(--color-bg-light);
+            border-bottom: 1px solid var(--color-border-default);
+            padding: var(--spacing-xl) var(--spacing-4xl);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .back-button {
+            background: none;
+            border: 1px solid var(--color-border-hover);
+            color: var(--color-text-primary);
+            padding: var(--spacing-sm) var(--spacing-base);
+            border-radius: var(--border-radius-base);
+            cursor: pointer;
+            font-size: var(--font-size-base);
+            transition: all var(--transition-base);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .back-button:hover {
+            background-color: var(--color-bg-card-hover);
+            border-color: var(--color-border-active);
+        }
+
+        .header-content {
+            flex: 1;
+        }
+
+        .header h1 {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-medium);
+            letter-spacing: var(--letter-spacing-tight);
+            color: var(--color-text-primary);
+        }
+
+        .header p {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-tertiary);
+            margin-top: var(--spacing-xs);
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: var(--spacing-4xl);
+        }
+
+        /* Profile Section */
+        .profile-section {
+            background: linear-gradient(135deg, var(--color-bg-light) 0%, var(--color-bg-card) 100%);
+            border: 1px solid var(--color-border-default);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-2xl);
+            margin-bottom: var(--spacing-3xl);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--border-radius-full);
+            background: linear-gradient(135deg, var(--color-border-hover), #666);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-light);
+        }
+
+        .profile-info h2 {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--spacing-xs);
+            color: var(--color-text-primary);
+        }
+
+        .profile-meta {
+            display: flex;
+            gap: var(--spacing-base);
+            font-size: var(--font-size-sm);
+            color: var(--color-text-tertiary);
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-xl);
+        }
+
+        .profile-item {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .profile-label {
+            font-size: var(--font-size-xs);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-wide);
+            color: var(--color-text-tertiary);
+        }
+
+        .profile-value {
+            font-size: var(--font-size-md);
+            font-weight: var(--font-weight-normal);
+            color: var(--color-text-primary);
+        }
+
+        /* Sections */
+        .section {
+            background-color: var(--color-bg-light);
+            border: 1px solid var(--color-border-default);
+            border-radius: var(--border-radius-lg);
+            margin-bottom: var(--spacing-3xl);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: var(--spacing-xl) var(--spacing-2xl);
+            border-bottom: 1px solid var(--color-border-default);
+        }
+
+        .section-header h3 {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-medium);
+            color: var(--color-text-primary);
+        }
+
+        .section-header p {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-tertiary);
+            margin-top: var(--spacing-xs);
+        }
+
+        .section-content {
+            padding: 0;
+        }
+
+        /* Application Cards */
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1px;
+            background-color: var(--color-border-default);
+        }
+
+        .app-card {
+            background-color: var(--color-bg-light);
+            padding: var(--spacing-xl);
+            transition: background-color var(--transition-base);
+        }
+
+        .app-card:hover {
+            background-color: #0f0f0f;
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-base);
+        }
+
+        .app-name {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-medium);
+            color: var(--color-text-primary);
+        }
+
+        .app-status {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius-base);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .app-status.active {
+            background-color: #1a3a1a;
+            color: var(--color-accent-green);
+            border: 1px solid #2a4a2a;
+        }
+
+        .app-status.inactive {
+            background-color: var(--color-border-default);
+            color: var(--color-text-tertiary);
+            border: 1px solid #222;
+        }
+
+        .app-details {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .app-detail-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: var(--font-size-sm);
+        }
+
+        .app-detail-label {
+            color: var(--color-text-tertiary);
+        }
+
+        .app-detail-value {
+            color: var(--color-text-primary);
+            font-weight: var(--font-weight-normal);
+        }
+
+        /* Table Styles */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: var(--color-bg-table-header);
+        }
+
+        th {
+            padding: var(--spacing-base) var(--spacing-2xl);
+            text-align: left;
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-medium);
+            color: var(--color-text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-wide);
+            border-bottom: 1px solid var(--color-border-default);
+        }
+
+        td {
+            padding: var(--spacing-lg) var(--spacing-2xl);
+            font-size: var(--font-size-base);
+            border-bottom: 1px solid #0f0f0f;
+        }
+
+        tbody tr {
+            transition: background-color var(--transition-base);
+        }
+
+        tbody tr:hover {
+            background-color: #0f0f0f;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius-base);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .badge.success {
+            background-color: #1a3a1a;
+            color: var(--color-accent-green);
+            border: 1px solid #2a4a2a;
+        }
+
+        .badge.pending {
+            background-color: #3a3a1a;
+            color: #fbbf24;
+            border: 1px solid #4a4a2a;
+        }
+
+        /* Referral Codes */
+        .referral-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: var(--spacing-base);
+            padding: var(--spacing-2xl);
+        }
+
+        .referral-card {
+            background-color: #0f0f0f;
+            border: 1px solid var(--color-border-default);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            transition: all var(--transition-base);
+        }
+
+        .referral-card:hover {
+            border-color: var(--color-border-hover);
+            transform: translateY(-2px);
+        }
+
+        .referral-code {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-medium);
+            font-family: var(--font-family-mono);
+            margin-bottom: var(--spacing-md);
+            letter-spacing: 2px;
+            color: var(--color-text-primary);
+        }
+
+        .referral-meta {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+            font-size: var(--font-size-sm);
+            color: var(--color-text-tertiary);
+        }
+
+        .referral-meta-item {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Amount */
+        .amount {
+            font-weight: var(--font-weight-medium);
+            font-variant-numeric: tabular-nums;
+            color: var(--color-text-primary);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px var(--spacing-lg);
+            color: var(--color-text-tertiary);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: var(--spacing-base);
+            opacity: 0.3;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: var(--spacing-lg);
+            }
+
+            .header {
+                padding: var(--spacing-lg);
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .app-grid {
+                grid-template-columns: 1fr;
+            }
+
+            th, td {
+                padding: var(--spacing-md) var(--spacing-lg);
+                font-size: var(--font-size-sm);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <a href="index.html" class="back-button">
+            ← Kembali
+        </a>
+        <div class="header-content">
+            <h1>Detail User</h1>
+            <p>Informasi lengkap tentang user dan aktivitasnya</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Profile Section -->
+        <div class="profile-section">
+            <div class="profile-header">
+                <div class="profile-avatar">AR</div>
+                <div class="profile-info">
+                    <h2 id="username">Ahmad Rahman</h2>
+                    <div class="profile-meta">
+                        <span>Member sejak: 2024-03-15</span>
+                        <span>•</span>
+                        <span>Last Login: 2025-11-04 14:30</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Data UMKM Section -->
+            <div style="margin-top: 32px; padding-top: 32px; border-top: 1px solid #1a1a1a;">
+                <h3 style="font-size: 14px; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px;">Data UMKM</h3>
+                <div class="profile-grid">
+                    <div class="profile-item">
+                        <div class="profile-label">Display Name</div>
+                        <div class="profile-value">Ahmad Rahman</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">Email</div>
+                        <div class="profile-value">ahmad_rahman@gmail.com</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">Date of Birth</div>
+                        <div class="profile-value">15 Maret 1985</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">Phone</div>
+                        <div class="profile-value">+62 812 3456 789</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">Country</div>
+                        <div class="profile-value">Indonesia</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">City</div>
+                        <div class="profile-value">Jakarta</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">Coorporate Name</div>
+                        <div class="profile-value">PT Maju Jaya Manufacturing</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">Industry Name</div>
+                        <div class="profile-value">Manufacturing</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">Employee Qty</div>
+                        <div class="profile-value">50-100 Karyawan</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">Solution Coorporate Needs</div>
+                        <div class="profile-value">Inventory Management, Financial Reporting</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">Total Aplikasi</div>
+                        <div class="profile-value">3 Aplikasi (2 Paid, 1 Free)</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">Total Transaksi</div>
+                        <div class="profile-value">Rp 9.350.000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Applications Section -->
+        <div class="section">
+            <div class="section-header">
+                <h3>Daftar Aplikasi</h3>
+                <p>Aplikasi yang dimiliki dan statusnya</p>
+            </div>
+            <div class="section-content">
+                <div class="app-grid">
+                    <div class="app-card">
+                        <div class="app-header">
+                            <div class="app-name">SmartWhiz</div>
+                            <span class="app-status active">Active</span>
+                        </div>
+                        <div class="app-details">
+                            <div class="app-detail-item">
+                                <span class="app-detail-label">Status</span>
+                                <span class="app-detail-value">Paid</span>
+                            </div>
+                            <div class="app-detail-item">
+                                <span class="app-detail-label">Tanggal Pembelian</span>
+                                <span class="app-detail-value">2024-06-12</span>
+                            </div>
+                            <div class="app-detail-item">
+                                <span class="app-detail-label">Last Login</span>
+                                <span class="app-detail-value">2025-11-04 14:25</span>
+                            </div>
+                            <div class="app-detail-item">
+                                <span class="app-detail-label">Paket</span>
+                                <span class="app-detail-value">Business (Annual)</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="app-card">
+                        <div class="app-header">
+                            <div class="app-name">FinanceWhiz</div>
+                            <span class="app-status active">Active</span>
+                        </div>
+                        <div class="app-details">
+                            <div class="app-detail-item">
+                                <span class="app-detail-label">Status</span>
+                                <span class="app-detail-value">Paid</span>
+                            </div>
+                            <div class="app-detail-item">
+                                <span class="app-detail-label">Tanggal Pembelian</span>
+                                <span class="app-detail-value">2024-08-20</span>
+                            </div>
+                            <div class="app-detail-item">
+                                <span class="app-detail-label">Last Login</span>
+                                <span class="app-detail-value">2025-11-04 11:15</span>
+                            </div>
+                            <div class="app-detail-item">
+                                <span class="app-detail-label">Paket</span>
+                                <span class="app-detail-value">Professional (Monthly)</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="app-card">
+                        <div class="app-header">
+                            <div class="app-name">SecureWhiz</div>
+                            <span class="app-status inactive">Inactive</span>
+                        </div>
+                        <div class="app-details">
+                            <div class="app-detail-item">
+                                <span class="app-detail-label">Status</span>
+                                <span class="app-detail-value">Free Trial</span>
+                            </div>
+                            <div class="app-detail-item">
+                                <span class="app-detail-label">Tanggal Aktivasi</span>
+                                <span class="app-detail-value">2025-10-15</span>
+                            </div>
+                            <div class="app-detail-item">
+                                <span class="app-detail-label">Last Login</span>
+                                <span class="app-detail-value">2025-10-22 09:45</span>
+                            </div>
+                            <div class="app-detail-item">
+                                <span class="app-detail-label">Paket</span>
+                                <span class="app-detail-value">Trial (Expired)</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="app-card">
+                        <div class="app-header">
+                            <div class="app-name">ReportWhizz</div>
+                            <span class="app-status inactive">Inactive</span>
+                        </div>
+                        <div class="app-details">
+                            <div class="app-detail-item">
+                                <span class="app-detail-label">Status</span>
+                                <span class="app-detail-value">Not Subscribed</span>
+                            </div>
+                            <div class="app-detail-item">
+                                <span class="app-detail-label">Tanggal Aktivasi</span>
+                                <span class="app-detail-value">-</span>
+                            </div>
+                            <div class="app-detail-item">
+                                <span class="app-detail-label">Last Login</span>
+                                <span class="app-detail-value">-</span>
+                            </div>
+                            <div class="app-detail-item">
+                                <span class="app-detail-label">Paket</span>
+                                <span class="app-detail-value">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="app-card">
+                        <div class="app-header">
+                            <div class="app-name">AssistanWhizz</div>
+                            <span class="app-status inactive">Inactive</span>
+                        </div>
+                        <div class="app-details">
+                            <div class="app-detail-item">
+                                <span class="app-detail-label">Status</span>
+                                <span class="app-detail-value">Not Subscribed</span>
+                            </div>
+                            <div class="app-detail-item">
+                                <span class="app-detail-label">Tanggal Aktivasi</span>
+                                <span class="app-detail-value">-</span>
+                            </div>
+                            <div class="app-detail-item">
+                                <span class="app-detail-label">Last Login</span>
+                                <span class="app-detail-value">-</span>
+                            </div>
+                            <div class="app-detail-item">
+                                <span class="app-detail-label">Paket</span>
+                                <span class="app-detail-value">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction History Section -->
+        <div class="section">
+            <div class="section-header">
+                <h3>Riwayat Transaksi</h3>
+                <p>Transaksi pembelian dan pembayaran</p>
+            </div>
+            <div class="section-content">
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Item</th>
+                                <th>Jumlah</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2025-11-01</td>
+                                <td>SmartWhiz - Business Plan Renewal</td>
+                                <td><span class="amount">Rp 2.500.000</span></td>
+                                <td><span class="badge success">Berhasil</span></td>
+                            </tr>
+                            <tr>
+                                <td>2025-10-15</td>
+                                <td>FinanceWhiz - Professional Plan</td>
+                                <td><span class="amount">Rp 450.000</span></td>
+                                <td><span class="badge success">Berhasil</span></td>
+                            </tr>
+                            <tr>
+                                <td>2025-10-15</td>
+                                <td>SecureWhiz - Free Trial Activation</td>
+                                <td><span class="amount">Rp 0</span></td>
+                                <td><span class="badge success">Berhasil</span></td>
+                            </tr>
+                            <tr>
+                                <td>2025-09-01</td>
+                                <td>FinanceWhiz - Professional Plan</td>
+                                <td><span class="amount">Rp 450.000</span></td>
+                                <td><span class="badge success">Berhasil</span></td>
+                            </tr>
+                            <tr>
+                                <td>2025-08-20</td>
+                                <td>FinanceWhiz - Professional Plan (First Purchase)</td>
+                                <td><span class="amount">Rp 450.000</span></td>
+                                <td><span class="badge success">Berhasil</span></td>
+                            </tr>
+                            <tr>
+                                <td>2024-11-01</td>
+                                <td>SmartWhiz - Business Plan Renewal</td>
+                                <td><span class="amount">Rp 2.500.000</span></td>
+                                <td><span class="badge success">Berhasil</span></td>
+                            </tr>
+                            <tr>
+                                <td>2024-06-12</td>
+                                <td>SmartWhiz - Business Plan (First Purchase)</td>
+                                <td><span class="amount">Rp 2.500.000</span></td>
+                                <td><span class="badge success">Berhasil</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Referral Codes Section -->
+        <div class="section">
+            <div class="section-header">
+                <h3>Kode Referral</h3>
+                <p>Kode referral yang digunakan oleh user ini</p>
+            </div>
+            <div class="section-content">
+                <div class="referral-grid">
+                    <div class="referral-card">
+                        <div class="referral-code">SMESCO2024</div>
+                        <div class="referral-meta">
+                            <div class="referral-meta-item">
+                                <span>Digunakan untuk:</span>
+                                <span>SmartWhiz</span>
+                            </div>
+                            <div class="referral-meta-item">
+                                <span>Tanggal:</span>
+                                <span>2024-06-12</span>
+                            </div>
+                            <div class="referral-meta-item">
+                                <span>Diskon:</span>
+                                <span>15%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="referral-card">
+                        <div class="referral-code">FINANCE20</div>
+                        <div class="referral-meta">
+                            <div class="referral-meta-item">
+                                <span>Digunakan untuk:</span>
+                                <span>FinanceWhiz</span>
+                            </div>
+                            <div class="referral-meta-item">
+                                <span>Tanggal:</span>
+                                <span>2024-08-20</span>
+                            </div>
+                            <div class="referral-meta-item">
+                                <span>Diskon:</span>
+                                <span>20%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="referral-card">
+                        <div class="referral-code">SECURE2025</div>
+                        <div class="referral-meta">
+                            <div class="referral-meta-item">
+                                <span>Digunakan untuk:</span>
+                                <span>SecureWhiz Trial</span>
+                            </div>
+                            <div class="referral-meta-item">
+                                <span>Tanggal:</span>
+                                <span>2025-10-15</span>
+                            </div>
+                            <div class="referral-meta-item">
+                                <span>Benefit:</span>
+                                <span>Extended Trial</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get username from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('user') || 'Ahmad Rahman';
+        
+        // Update username in the page
+        document.getElementById('username').textContent = username;
+        
+        // Update avatar initials - ambil 2 huruf pertama dan kapitalisasi
+        const avatar = document.querySelector('.profile-avatar');
+        const initials = username.substring(0, 2).toUpperCase();
+        avatar.textContent = initials;
+    </script>
+</body>
+</html>

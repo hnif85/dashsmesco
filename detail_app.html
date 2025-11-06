@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Aplikasi - Dashboard SMESCO</title>
+    <style>
+        :root {
+            /* Colors */
+            --color-bg-primary: #000000;
+            --color-bg-light: #0a0a0a;
+            --color-bg-card: #111111;
+            --color-bg-card-hover: #1a1a1a;
+            --color-bg-table-header: #050505;
+            --color-text-primary: #ffffff;
+            --color-text-secondary: #999999;
+            --color-text-tertiary: #666666;
+            --color-text-muted: #4a4a4a;
+            --color-border-default: #1a1a1a;
+            --color-border-hover: #333333;
+            --color-border-active: #444444;
+            --color-accent-cyan: #06b6d4;
+            --color-accent-green: #22c55e;
+            --color-accent-red: #ef4444;
+
+            /* Typography */
+            --font-family-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            --font-family-mono: 'Courier New', monospace;
+            --font-size-xs: 11px;
+            --font-size-sm: 12px;
+            --font-size-base: 14px;
+            --font-size-md: 15px;
+            --font-size-lg: 16px;
+            --font-size-xl: 18px;
+            --font-size-2xl: 20px;
+            --font-size-3xl: 24px;
+            --font-size-4xl: 32px;
+            --font-size-5xl: 36px;
+            --font-weight-light: 300;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+            --line-height-tight: 1.2;
+            --line-height-normal: 1.5;
+            --line-height-relaxed: 1.75;
+            --letter-spacing-tight: -0.5px;
+            --letter-spacing-normal: 0;
+            --letter-spacing-wide: 0.5px;
+
+            /* Spacing */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 12px;
+            --spacing-base: 16px;
+            --spacing-lg: 20px;
+            --spacing-xl: 24px;
+            --spacing-2xl: 32px;
+            --spacing-3xl: 40px;
+            --spacing-4xl: 48px;
+            --spacing-5xl: 64px;
+
+            /* Border Radius */
+            --border-radius-sm: 4px;
+            --border-radius-base: 6px;
+            --border-radius-md: 8px;
+            --border-radius-lg: 12px;
+            --border-radius-xl: 16px;
+            --border-radius-full: 9999px;
+
+            /* Transitions */
+            --transition-fast: 150ms ease;
+            --transition-base: 200ms ease;
+            --transition-slow: 300ms ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            font-family: var(--font-family-primary);
+            padding: 0;
+            overflow-x: hidden;
+            line-height: var(--line-height-normal);
+        }
+
+        .header {
+            background-color: var(--color-bg-light);
+            border-bottom: 1px solid var(--color-border-default);
+            padding: var(--spacing-xl) var(--spacing-4xl);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .back-button {
+            background: none;
+            border: 1px solid var(--color-border-hover);
+            color: var(--color-text-primary);
+            padding: var(--spacing-sm) var(--spacing-base);
+            border-radius: var(--border-radius-base);
+            cursor: pointer;
+            font-size: var(--font-size-base);
+            transition: all var(--transition-base);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .back-button:hover {
+            background-color: var(--color-bg-card-hover);
+            border-color: var(--color-border-active);
+        }
+
+        .header-content {
+            flex: 1;
+        }
+
+        .header h1 {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-medium);
+            letter-spacing: var(--letter-spacing-tight);
+            color: var(--color-text-primary);
+        }
+
+        .header p {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-tertiary);
+            margin-top: var(--spacing-xs);
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: var(--spacing-4xl);
+        }
+
+        /* App Overview Section */
+        .app-overview {
+            background: linear-gradient(135deg, var(--color-bg-light) 0%, var(--color-bg-card) 100%);
+            border: 1px solid var(--color-border-default);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-2xl);
+            margin-bottom: var(--spacing-3xl);
+        }
+
+        .app-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .app-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--border-radius-full);
+            background: linear-gradient(135deg, var(--color-border-hover), #666);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-light);
+        }
+
+        .app-info h2 {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--spacing-xs);
+            color: var(--color-text-primary);
+        }
+
+        .app-meta {
+            display: flex;
+            gap: var(--spacing-base);
+            font-size: var(--font-size-sm);
+            color: var(--color-text-tertiary);
+        }
+
+        .app-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: var(--spacing-xl);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .stat-label {
+            font-size: var(--font-size-xs);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-wide);
+            color: var(--color-text-tertiary);
+        }
+
+        .stat-value {
+            font-size: var(--font-size-md);
+            font-weight: var(--font-weight-normal);
+            color: var(--color-text-primary);
+        }
+
+        /* Sections */
+        .section {
+            background-color: var(--color-bg-light);
+            border: 1px solid var(--color-border-default);
+            border-radius: var(--border-radius-lg);
+            margin-bottom: var(--spacing-3xl);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: var(--spacing-xl) var(--spacing-2xl);
+            border-bottom: 1px solid var(--color-border-default);
+        }
+
+        .section-header h3 {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-medium);
+            color: var(--color-text-primary);
+        }
+
+        .section-header p {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-tertiary);
+            margin-top: var(--spacing-xs);
+        }
+
+        .section-content {
+            padding: 0;
+        }
+
+        /* Package Cards */
+        .package-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1px;
+            background-color: var(--color-border-default);
+        }
+
+        .package-card {
+            background-color: var(--color-bg-light);
+            padding: var(--spacing-xl);
+            transition: background-color var(--transition-base);
+        }
+
+        .package-card:hover {
+            background-color: #0f0f0f;
+        }
+
+        .package-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-base);
+        }
+
+        .package-name {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-medium);
+            color: var(--color-text-primary);
+        }
+
+        .package-type {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius-base);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .package-type.paid {
+            background-color: #1a3a1a;
+            color: var(--color-accent-green);
+            border: 1px solid #2a4a2a;
+        }
+
+        .package-type.free {
+            background-color: #3a3a1a;
+            color: #fbbf24;
+            border: 1px solid #4a4a2a;
+        }
+
+        .package-details {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .package-detail-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: var(--font-size-sm);
+        }
+
+        .package-detail-label {
+            color: var(--color-text-tertiary);
+        }
+
+        .package-detail-value {
+            color: var(--color-text-primary);
+            font-weight: var(--font-weight-normal);
+        }
+
+        /* Table Styles */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: var(--color-bg-table-header);
+        }
+
+        th {
+            padding: var(--spacing-base) var(--spacing-2xl);
+            text-align: left;
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-medium);
+            color: var(--color-text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-wide);
+            border-bottom: 1px solid var(--color-border-default);
+        }
+
+        td {
+            padding: var(--spacing-lg) var(--spacing-2xl);
+            font-size: var(--font-size-base);
+            border-bottom: 1px solid #0f0f0f;
+        }
+
+        tbody tr {
+            transition: background-color var(--transition-base);
+        }
+
+        tbody tr:hover {
+            background-color: #0f0f0f;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: var(--spacing-xs);
+            background-color: var(--color-border-default);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: var(--spacing-sm);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-border-hover), #666);
+            transition: width var(--transition-slow);
+        }
+
+        /* Amount */
+        .amount {
+            font-weight: var(--font-weight-medium);
+            font-variant-numeric: tabular-nums;
+            color: var(--color-text-primary);
+        }
+
+        /* Accordion */
+        .accordion {
+            border: 1px solid var(--color-border-default);
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+            margin-bottom: var(--spacing-base);
+        }
+
+        .accordion-header {
+            background-color: var(--color-bg-light);
+            padding: var(--spacing-base) var(--spacing-lg);
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-size: var(--font-size-base);
+            color: var(--color-text-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color var(--transition-base);
+        }
+
+        .accordion-header:hover {
+            background-color: #0f0f0f;
+        }
+
+        .accordion-header.active {
+            background-color: var(--color-bg-card-hover);
+        }
+
+        .accordion-toggle {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-tertiary);
+            transition: transform var(--transition-base);
+        }
+
+        .accordion-header.active .accordion-toggle {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            display: none;
+            background-color: var(--color-bg-table-header);
+            border-top: 1px solid var(--color-border-default);
+        }
+
+        .accordion-content.active {
+            display: block;
+        }
+
+        .accordion-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .accordion-table th,
+        .accordion-table td {
+            padding: var(--spacing-md) var(--spacing-lg);
+            text-align: left;
+            font-size: var(--font-size-sm);
+            border-bottom: 1px solid var(--color-border-default);
+        }
+
+        .accordion-table th {
+            background-color: var(--color-bg-light);
+            color: var(--color-text-tertiary);
+            font-weight: var(--font-weight-medium);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-wide);
+        }
+
+        .accordion-table td {
+            color: #ccc;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .status-badge.active {
+            background-color: #1a3a1a;
+            color: var(--color-accent-green);
+        }
+
+        .status-badge.inactive {
+            background-color: #3a1a1a;
+            color: var(--color-accent-red);
+        }
+
+        /* Link Styles */
+        a {
+            color: var(--color-text-primary);
+            text-decoration: none;
+            transition: color var(--transition-base);
+        }
+
+        a:hover {
+            color: #ccc;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: var(--spacing-lg);
+            }
+
+            .header {
+                padding: var(--spacing-lg);
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .app-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .app-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .package-grid {
+                grid-template-columns: 1fr;
+            }
+
+            th, td {
+                padding: var(--spacing-md) var(--spacing-lg);
+                font-size: var(--font-size-sm);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <a href="index.html" class="back-button">
+            ← Kembali
+        </a>
+        <div class="header-content">
+            <h1>Detail Aplikasi</h1>
+            <p id="app-description">Informasi lengkap tentang aplikasi dan penggunaannya</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- App Overview Section -->
+        <div class="app-overview">
+            <div class="app-header">
+                <div class="app-icon" id="app-icon">AW</div>
+                <div class="app-info">
+                    <h2 id="app-name">AssistantWhiz</h2>
+                    <div class="app-meta">
+                        <span>Diluncurkan: 2024-01-15</span>
+                        <span>•</span>
+                        <span>Versi: 2.1.0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="app-stats">
+                <div class="stat-item">
+                    <div class="stat-label">Total Active Users</div>
+                    <div class="stat-value" id="total-users">240</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Paid Users</div>
+                    <div class="stat-value" id="paid-users">200</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Free Users</div>
+                    <div class="stat-value" id="free-users">50</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Daily Active Users</div>
+                    <div class="stat-value" id="daily-active-users">180</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Conversion Rate</div>
+                    <div class="stat-value" id="conversion-rate">75.0%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Package Breakdown Section -->
+        <div class="section">
+            <div class="section-header">
+                <h3>Breakdown Paket</h3>
+                <p>Jumlah pengguna per paket aplikasi</p>
+            </div>
+            <div class="section-content">
+                <div class="package-grid" id="package-grid">
+                    <!-- Packages will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Users Section -->
+        <div class="section">
+            <div class="section-header">
+                <h3>Pengguna Aplikasi</h3>
+                <p>Daftar pengguna yang menggunakan aplikasi ini</p>
+            </div>
+            <div class="section-content">
+                <div style="padding: 32px;">
+                    <div id="users-accordion">
+                        <!-- Accordions will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get app name from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const appName = urlParams.get('app') || 'AssistantWhiz';
+
+        // App data
+        const appData = {
+            'AssistantWhiz': {
+                name: 'AssistantWhiz',
+                icon: 'AW',
+                description: 'AI-powered assistant for business automation',
+                totalUsers: 240,
+                paidUsers: 200,
+                freeUsers: 50,
+                dailyActiveUsers: 180,
+                conversionRate: '75.0%',
+                packages: [
+                    { name: 'AssistantWhiz - Enterprise', users: 100 },
+                    { name: 'AssistantWhiz - Pro', users: 80 },
+                    { name: 'AssistantWhiz - Basic', users: 20 }
+                ]
+            },
+            'CreateWhiz': {
+                name: 'CreateWhiz',
+                icon: 'CW',
+                description: 'Content creation and design tool',
+                totalUsers: 210,
+                paidUsers: 180,
+                freeUsers: 40,
+                conversionRate: '80.0%',
+                packages: [
+                    { name: 'CreateWhiz - Free Trial', type: 'free', users: 40 },
+                    { name: 'CreateWhiz - Basic', type: 'paid', users: 60 },
+                    { name: 'CreateWhiz - Enterprise', type: 'paid', users: 80 },
+                    { name: 'CreateWhiz - Pro', type: 'paid', users: 30 }
+                ]
+            },
+            'CrmWhiz': {
+                name: 'CrmWhiz',
+                icon: 'CW',
+                description: 'Customer relationship management platform',
+                totalUsers: 380,
+                paidUsers: 300,
+                freeUsers: 100,
+                conversionRate: '70.0%',
+                packages: [
+                    { name: 'CrmWhiz - Enterprise', type: 'paid', users: 150 },
+                    { name: 'CrmWhiz - Pro', type: 'paid', users: 120 },
+                    { name: 'CrmWhiz - Basic', type: 'paid', users: 30 }
+                ]
+            },
+            'FinanceWhiz.AI': {
+                name: 'FinanceWhiz.AI',
+                icon: 'FW',
+                description: 'AI-powered financial management tool',
+                totalUsers: 290,
+                paidUsers: 250,
+                freeUsers: 60,
+                conversionRate: '82.0%',
+                packages: [
+                    { name: 'FinanceWhiz - Free Trial', type: 'free', users: 60 },
+                    { name: 'FinanceWhiz - Enterprise', type: 'paid', users: 120 },
+                    { name: 'FinanceWhiz - Pro', type: 'paid', users: 90 },
+                    { name: 'FinanceWhiz - Basic', type: 'paid', users: 20 }
+                ]
+            },
+            'KOLWhiz': {
+                name: 'KOLWhiz',
+                icon: 'KW',
+                description: 'Key opinion leader management platform',
+                totalUsers: 170,
+                paidUsers: 150,
+                freeUsers: 30,
+                conversionRate: '85.0%',
+                packages: [
+                    { name: 'KOLWhiz - Enterprise', type: 'paid', users: 80 },
+                    { name: 'KOLWhiz - Pro', type: 'paid', users: 50 },
+                    { name: 'KOLWhiz - Basic', type: 'paid', users: 20 }
+                ]
+            },
+            'Legalwhiz': {
+                name: 'Legalwhiz',
+                icon: 'LW',
+                description: 'Legal document management system',
+                totalUsers: 130,
+                paidUsers: 120,
+                freeUsers: 20,
+                conversionRate: '88.0%',
+                packages: [
+                    { name: 'Legalwhiz - Enterprise', type: 'paid', users: 60 },
+                    { name: 'Legalwhiz - Pro', type: 'paid', users: 40 },
+                    { name: 'Legalwhiz - Basic', type: 'paid', users: 20 }
+                ]
+            },
+            'PostWhiz': {
+                name: 'PostWhiz',
+                icon: 'PW',
+                description: 'Social media posting and scheduling tool',
+                totalUsers: 215,
+                paidUsers: 180,
+                freeUsers: 45,
+                conversionRate: '78.0%',
+                packages: [
+                    { name: 'PostWhiz - Enterprise', type: 'paid', users: 90 },
+                    { name: 'PostWhiz - Pro', type: 'paid', users: 60 },
+                    { name: 'PostWhiz - Basic', type: 'paid', users: 30 }
+                ]
+            },
+            'ReportWhiz': {
+                name: 'ReportWhiz',
+                icon: 'RW',
+                description: 'Advanced reporting and analytics platform',
+                totalUsers: 255,
+                paidUsers: 220,
+                freeUsers: 55,
+                conversionRate: '80.0%',
+                packages: [
+                    { name: 'ReportWhiz - Enterprise', type: 'paid', users: 110 },
+                    { name: 'ReportWhiz - Pro', type: 'paid', users: 80 },
+                    { name: 'ReportWhiz - Basic', type: 'paid', users: 30 }
+                ]
+            },
+            'SalesWhiz': {
+                name: 'SalesWhiz',
+                icon: 'SW',
+                description: 'Sales management and CRM tool',
+                totalUsers: 330,
+                paidUsers: 280,
+                freeUsers: 70,
+                conversionRate: '76.0%',
+                packages: [
+                    { name: 'SalesWhiz - Enterprise', type: 'paid', users: 140 },
+                    { name: 'SalesWhiz - Pro', type: 'paid', users: 100 },
+                    { name: 'SalesWhiz - Basic', type: 'paid', users: 40 }
+                ]
+            },
+            'SecureWhiz': {
+                name: 'SecureWhiz',
+                icon: 'SW',
+                description: 'Security and compliance management platform',
+                totalUsers: 220,
+                paidUsers: 190,
+                freeUsers: 40,
+                conversionRate: '83.0%',
+                packages: [
+                    { name: 'SecureWhiz - Enterprise', type: 'paid', users: 95 },
+                    { name: 'SecureWhiz - Pro', type: 'paid', users: 65 },
+                    { name: 'SecureWhiz - Basic', type: 'paid', users: 30 }
+                ]
+            },
+            'SmartWhiz': {
+                name: 'SmartWhiz',
+                icon: 'SW',
+                description: 'Smart business intelligence platform',
+                totalUsers: 410,
+                paidUsers: 350,
+                freeUsers: 90,
+                conversionRate: '81.0%',
+                packages: [
+                    { name: 'SmartWhiz - Enterprise', type: 'paid', users: 175 },
+                    { name: 'SmartWhiz - Pro', type: 'paid', users: 125 },
+                    { name: 'SmartWhiz - Basic', type: 'paid', users: 50 }
+                ]
+            },
+            'SmeWhiz': {
+                name: 'SmeWhiz',
+                icon: 'SW',
+                description: 'SME management and growth platform',
+                totalUsers: 185,
+                paidUsers: 160,
+                freeUsers: 35,
+                conversionRate: '84.0%',
+                packages: [
+                    { name: 'SmeWhiz - Enterprise', type: 'paid', users: 80 },
+                    { name: 'SmeWhiz - Pro', type: 'paid', users: 55 },
+                    { name: 'SmeWhiz - Basic', type: 'paid', users: 25 }
+                ]
+            },
+            'TalentWhiz.ai': {
+                name: 'TalentWhiz.ai',
+                icon: 'TW',
+                description: 'AI-powered talent management system',
+                totalUsers: 155,
+                paidUsers: 140,
+                freeUsers: 25,
+                conversionRate: '87.0%',
+                packages: [
+                    { name: 'TalentWhiz - Enterprise', type: 'paid', users: 70 },
+                    { name: 'TalentWhiz - Pro', type: 'paid', users: 50 },
+                    { name: 'TalentWhiz - Basic', type: 'paid', users: 20 }
+                ]
+            }
+        };
+
+        // Get current app data
+        const currentApp = appData[appName] || appData['AssistantWhiz'];
+
+        // Update page content
+        document.getElementById('app-name').textContent = currentApp.name;
+        document.getElementById('app-icon').textContent = currentApp.icon;
+        document.getElementById('app-description').textContent = currentApp.description;
+        document.getElementById('total-users').textContent = currentApp.totalUsers;
+        document.getElementById('paid-users').textContent = currentApp.paidUsers;
+        document.getElementById('free-users').textContent = currentApp.freeUsers;
+        document.getElementById('daily-active-users').textContent = currentApp.dailyActiveUsers;
+        document.getElementById('conversion-rate').textContent = currentApp.conversionRate;
+
+        // Populate packages
+        const packageGrid = document.getElementById('package-grid');
+        currentApp.packages.forEach(pkg => {
+            const card = document.createElement('div');
+            card.className = 'package-card';
+            card.innerHTML = `
+                <div class="package-header">
+                    <div class="package-name">${pkg.name}</div>                    
+                </div>
+                <div class="package-details">
+                    <div class="package-detail-item">
+                        <span class="package-detail-label">Active Users</span>
+                        <span class="package-detail-value">${pkg.users}</span>
+                    </div>
+                </div>
+            `;
+            packageGrid.appendChild(card);
+        });
+
+        // Sample users data for each app
+        const usersData = {
+            'AssistantWhiz': [
+                {
+                    username: 'user_a',
+                    lastLogin: '2025-11-04 14:30',
+                    expiredAt: '2026-11-04',
+                    status: 'active',
+                    transactions: [
+                        { package: 'AssistantWhiz - Enterprise', purchaseDate: '2024-06-12', expiryDate: '2026-06-12' },
+                        { package: 'AssistantWhiz - Pro', purchaseDate: '2023-12-01', expiryDate: '2025-12-01' }
+                    ]
+                },
+                {
+                    username: 'user_b',
+                    lastLogin: '2025-11-04 13:15',
+                    expiredAt: '2025-12-15',
+                    status: 'active',
+                    transactions: [
+                        { package: 'AssistantWhiz - Basic', purchaseDate: '2025-09-15', expiryDate: '2025-12-15' }
+                    ]
+                },
+                {
+                    username: 'user_c',
+                    lastLogin: '2025-11-04 12:45',
+                    expiredAt: '2025-08-20',
+                    status: 'inactive',
+                    transactions: [
+                        { package: 'AssistantWhiz - Pro', purchaseDate: '2024-08-20', expiryDate: '2025-08-20' }
+                    ]
+                }
+            ],
+            'CreateWhiz': [
+                {
+                    username: 'user_d',
+                    lastLogin: '2025-11-03 16:20',
+                    expiredAt: '2026-02-10',
+                    status: 'active',
+                    transactions: [
+                        { package: 'CreateWhiz - Enterprise', purchaseDate: '2025-02-10', expiryDate: '2026-02-10' }
+                    ]
+                },
+                {
+                    username: 'user_e',
+                    lastLogin: '2025-11-03 09:10',
+                    expiredAt: '2025-07-05',
+                    status: 'inactive',
+                    transactions: [
+                        { package: 'CreateWhiz - Pro', purchaseDate: '2024-07-05', expiryDate: '2025-07-05' }
+                    ]
+                }
+            ]
+            // Add more users for other apps as needed
+        };
+
+        // Get users for current app, fallback to AssistantWhiz users
+        const currentUsers = usersData[appName] || usersData['AssistantWhiz'];
+
+        // Populate accordions
+        const accordionContainer = document.getElementById('users-accordion');
+        currentUsers.forEach(user => {
+            const accordion = document.createElement('div');
+            accordion.className = 'accordion';
+
+            const header = document.createElement('button');
+            header.className = 'accordion-header';
+            header.innerHTML = `
+                <div style="display: flex; gap: 20px; align-items: center;">
+                    <span><strong>${user.username}</strong></span>
+                    <span style="color: #666;">Last Login: ${user.lastLogin}</span>
+                    <span style="color: #666;">Expired: ${user.expiredAt}</span>
+                    <span class="status-badge ${user.status}">${user.status === 'active' ? 'Aktif' : 'Tidak Aktif'}</span>
+                </div>
+                <span class="accordion-toggle">▼</span>
+            `;
+
+            const content = document.createElement('div');
+            content.className = 'accordion-content';
+
+            const table = document.createElement('table');
+            table.className = 'accordion-table';
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Nama Paket</th>
+                        <th>Tanggal Purchase</th>
+                        <th>Tanggal Expired</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${user.transactions.map(tx => `
+                        <tr>
+                            <td>${tx.package}</td>
+                            <td>${tx.purchaseDate}</td>
+                            <td>${tx.expiryDate}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+
+            content.appendChild(table);
+            accordion.appendChild(header);
+            accordion.appendChild(content);
+            accordionContainer.appendChild(accordion);
+
+            // Add click event for accordion toggle
+            header.addEventListener('click', () => {
+                header.classList.toggle('active');
+                content.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -12,16 +12,100 @@
     :root { --brand:#111827; --accent:#2563eb; }
     body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
     .step.active { color: var(--accent); font-weight: 700; }
-    .chip { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700; }
-    .btn { @apply inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold shadow-sm transition; }
-    .btn-primary { @apply bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800; }
-    .btn-outline { @apply border border-gray-300 text-gray-700 hover:bg-gray-50; }
-    .btn-danger { @apply bg-red-600 text-white hover:bg-red-700; }
-    .card { @apply bg-white rounded-2xl shadow-sm ring-1 ring-black/5; }
-    .field { @apply block w-full rounded-xl border border-gray-300 px-3 py-2 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500; }
-    .label { @apply block text-sm font-medium text-gray-700 mb-1; }
-    .kbd { @apply inline-flex items-center rounded-md border border-gray-300 bg-gray-50 px-1.5 py-0.5 text-xs font-medium text-gray-700; }
-    .link { @apply text-blue-600 hover:text-blue-700 underline underline-offset-4; }
+    .chip {
+      display:inline-flex;
+      align-items:center;
+      padding:0.25rem 0.625rem;
+      border-radius:9999px;
+      font-size:0.75rem;
+      font-weight:500;
+      background:#eff6ff;
+      color:#1d4ed8;
+    }
+    .btn {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:0.75rem;
+      padding:0.625rem 1rem;
+      font-size:0.875rem;
+      font-weight:600;
+      line-height:1.25rem;
+      border:1px solid transparent;
+      box-shadow:0 1px 2px rgba(15,23,42,0.12);
+      transition:background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+    }
+    .btn:disabled {
+      opacity:0.6;
+      cursor:not-allowed;
+      box-shadow:none;
+    }
+    .btn:focus-visible {
+      outline:2px solid var(--accent);
+      outline-offset:2px;
+    }
+    .btn:active { transform:translateY(1px); }
+    .btn-primary {
+      background:#2563eb;
+      color:#fff;
+    }
+    .btn-primary:hover { background:#1d4ed8; }
+    .btn-primary:active { background:#1e40af; }
+    .btn-outline {
+      background:#fff;
+      border-color:#d1d5db;
+      color:#374151;
+    }
+    .btn-outline:hover { background:#f9fafb; }
+    .btn-danger {
+      background:#dc2626;
+      color:#fff;
+    }
+    .btn-danger:hover { background:#b91c1c; }
+    .card {
+      background:#fff;
+      border-radius:1.5rem;
+      box-shadow:0 10px 20px rgba(15,23,42,0.08);
+      border:1px solid rgba(15,23,42,0.05);
+    }
+    .field {
+      display:block;
+      width:100%;
+      border-radius:0.75rem;
+      border:1px solid #d1d5db;
+      padding:0.5rem 0.75rem;
+      outline:none;
+      transition:border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .field:focus {
+      border-color:#3b82f6;
+      box-shadow:0 0 0 4px rgba(59,130,246,0.15);
+    }
+    .label {
+      display:block;
+      font-size:0.875rem;
+      font-weight:500;
+      color:#374151;
+      margin-bottom:0.25rem;
+    }
+    .kbd {
+      display:inline-flex;
+      align-items:center;
+      border-radius:0.375rem;
+      border:1px solid #d1d5db;
+      background:#f9fafb;
+      padding:0.125rem 0.375rem;
+      font-size:0.75rem;
+      font-weight:500;
+      color:#374151;
+    }
+    .link {
+      color:#2563eb;
+      text-decoration:underline;
+      text-decoration-thickness:1px;
+      text-underline-offset:0.25rem;
+    }
+    .link:hover { color:#1d4ed8; }
     .hidden-vis { display:none; }
   </style>
 </head>
@@ -149,6 +233,21 @@
         </div>
       </div>
 
+      <div class="card p-4 space-y-3">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <div class="text-sm text-gray-500">Link Referral Anda</div>
+            <div class="text-sm text-gray-900 font-semibold" id="refCodeLabel">—</div>
+          </div>
+          <span class="chip">Bagikan ke pelanggan</span>
+        </div>
+        <div class="flex gap-2">
+          <input id="dashboardRefLink" class="field flex-1" type="text" readonly value="https://mwx.market/r/—" />
+          <button class="btn btn-outline" onclick="copyLink('dashboardRefLink')">Copy</button>
+        </div>
+        <p class="text-xs text-gray-500">Link aktif dapat digunakan kapan saja selama program berjalan.</p>
+      </div>
+
       <!-- Stats -->
       <div class="grid md:grid-cols-4 gap-4">
         <div class="card p-4">
@@ -167,19 +266,6 @@
           <div class="text-xs text-gray-500">Reward ≈ MWXT</div>
           <div class="text-2xl font-semibold" id="statRewardMwxt">0</div>
           <div class="text-xs text-gray-500 mt-1">Kurs MWXT: Rp<span id="mwxtPrice">2,500</span></div>
-        </div>
-      </div>
-
-      <!-- Price control (demo) -->
-      <div class="card p-4 flex items-center justify-between gap-4">
-        <div>
-          <div class="text-sm font-medium">Harga MWXT (demo)</div>
-          <p class="text-xs text-gray-500">Hanya untuk simulasi konversi.</p>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="text-sm">Rp</span>
-          <input id="inputMwxtPrice" type="number" class="field w-40" value="2500" min="1" step="1" />
-          <button class="btn btn-outline" onclick="updateMwxtPrice()">Update</button>
         </div>
       </div>
 
@@ -216,14 +302,6 @@
         </div>
         <span class="chip">Langkah 4/4</span>
       </header>
-
-      <!-- Period Control (Demo) -->
-      <div class="flex items-center gap-3">
-        <span class="text-sm text-gray-600">Periode klaim (demo):</span>
-        <label class="inline-flex items-center gap-2 text-sm">
-          <input id="claimOpen" type="checkbox" class="h-4 w-4" onchange="renderClaim()" /> Buka
-        </label>
-      </div>
 
       <div id="claimClosedBox" class="p-4 border border-amber-200 bg-amber-50 rounded-xl hidden-vis">
         <div class="font-medium">Periode klaim sedang ditutup.</div>
@@ -304,11 +382,40 @@
     </div>
   </dialog>
 
-  <!-- TOAST -->
-  <div id="toast" class="fixed bottom-6 right-6 hidden-vis">
-    <div class="card px-4 py-3 flex items-center gap-3">
-      <div class="h-2 w-2 rounded-full bg-green-600"></div>
-      <div id="toastText" class="text-sm"></div>
+  <!-- FIXED CONTROLS -->
+  <div class="fixed bottom-6 right-6 flex flex-col gap-3 pointer-events-none z-40">
+    <div id="toast" class="hidden-vis pointer-events-auto">
+      <div class="card px-4 py-3 flex items-center gap-3">
+        <div class="h-2 w-2 rounded-full bg-green-600"></div>
+        <div id="toastText" class="text-sm"></div>
+      </div>
+    </div>
+    <div id="demoControls" class="pointer-events-auto">
+      <div class="card w-72 shadow-lg ring-1 ring-black/5">
+        <div class="px-4 py-3 border-b border-gray-200">
+          <div class="text-sm font-semibold">Pengaturan Demo</div>
+          <p class="text-xs text-gray-500">Hanya terlihat di prototipe ini.</p>
+        </div>
+        <div class="p-4 space-y-4 text-sm">
+          <div>
+            <div class="text-xs text-gray-500 mb-2">Harga MWXT (demo)</div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm">Rp</span>
+              <input id="inputMwxtPrice" type="number" class="field flex-1" value="2500" min="1" step="1" />
+              <button class="btn btn-outline" onclick="updateMwxtPrice()">Update</button>
+            </div>
+          </div>
+          <div class="border-t border-gray-100 pt-4">
+            <label class="flex items-center justify-between gap-3 text-sm">
+              <span>Periode klaim (demo)</span>
+              <span class="inline-flex items-center gap-2">
+                <input id="claimOpen" type="checkbox" class="h-4 w-4" onchange="renderClaim()" />
+                <span class="text-xs uppercase tracking-wide text-gray-500">Buka</span>
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -326,6 +433,12 @@
 
     // --- Utilities ---
     const fmtIDR = (n) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(n || 0);
+    const calcRewardIdr = (row, fallbackPct = 0) => {
+      if (typeof row.rewardIdr === 'number' && !Number.isNaN(row.rewardIdr)) return row.rewardIdr;
+      const pct = typeof row.rewardPct === 'number' ? row.rewardPct : fallbackPct;
+      const base = typeof row.price === 'number' ? row.price : 0;
+      return Math.round(base * (pct / 100));
+    };
     const show = (id, on = true) => document.getElementById(id).classList.toggle('hidden-vis', !on);
     const setStep = (name) => {
       ['terms','settings','dashboard','claim'].forEach(s => {
@@ -374,6 +487,7 @@
         s.tx = s.tx || demoTransactions();
         store.set(s);
       }
+      syncDemoControls();
       document.getElementById('refLink').value = store.get().refLink;
       document.getElementById('maxPool').innerText = store.get().maxPool;
       document.getElementById('rewardPct').value = store.get().rewardPct;
@@ -397,9 +511,17 @@
       document.getElementById('remaining').innerText = `${maxPool - (reward + discount)}%`;
     }
 
-    function copyLink() {
-      navigator.clipboard.writeText(document.getElementById('refLink').value);
+    function copyLink(targetId = 'refLink') {
+      const input = document.getElementById(targetId);
+      if (!input) { toast('Link tidak ditemukan'); return; }
+      navigator.clipboard.writeText(input.value);
       toast('Link referral disalin');
+    }
+
+    function syncDemoControls() {
+      const s = store.get();
+      const priceInput = document.getElementById('inputMwxtPrice');
+      if (priceInput) priceInput.value = s.mwxtPrice || 2500;
     }
 
     function saveSettings() {
@@ -425,11 +547,15 @@
       if (!s.refCode) ensureReferralLink();
       document.getElementById('inputMwxtPrice').value = s.mwxtPrice || 2500;
       document.getElementById('mwxtPrice').innerText = s.mwxtPrice || 2500;
+      const dashLinkInput = document.getElementById('dashboardRefLink');
+      if (dashLinkInput) dashLinkInput.value = s.refLink || 'https://mwx.market/r/—';
+      const refCodeLabel = document.getElementById('refCodeLabel');
+      if (refCodeLabel) refCodeLabel.innerText = s.refCode || 'Belum tersedia';
       // aggregate
       const rows = s.tx || [];
       const users = new Set(rows.map(r => r.user));
       const orders = rows.length;
-      const rewardIdr = rows.reduce((sum, r) => sum + r.rewardIdr, 0);
+      const rewardIdr = rows.reduce((sum, r) => sum + calcRewardIdr(r, s.rewardPct || 0), 0);
       const rewardMwxt = (rewardIdr / (s.mwxtPrice || 2500)).toFixed(2);
       document.getElementById('statUsers').innerText = users.size;
       document.getElementById('statOrders').innerText = orders;
@@ -440,13 +566,14 @@
       body.innerHTML = '';
       rows.forEach(r => {
         const tr = document.createElement('tr');
+        const rewardValueIdr = calcRewardIdr(r, s.rewardPct || 0);
         tr.innerHTML = `
           <td class="px-4 py-2 text-sm text-gray-700">${r.date}</td>
           <td class="px-4 py-2 text-sm">${r.user}</td>
           <td class="px-4 py-2 text-sm">${r.app}</td>
           <td class="px-4 py-2 text-sm text-right">${fmtIDR(r.price)}</td>
           <td class="px-4 py-2 text-sm text-right">${r.discountPct}%</td>
-          <td class="px-4 py-2 text-sm text-right">${fmtIDR(r.rewardIdr)}</td>
+          <td class="px-4 py-2 text-sm text-right">${fmtIDR(rewardValueIdr)}</td>
         `;
         body.appendChild(tr);
       });
@@ -459,6 +586,7 @@
       s.mwxtPrice = Math.max(1, val);
       store.set(s);
       document.getElementById('mwxtPrice').innerText = s.mwxtPrice;
+      syncDemoControls();
       toast('Kurs MWXT diperbarui');
       renderDashboard();
       renderClaim();
@@ -477,7 +605,7 @@
       if (hasWallet) {
         document.getElementById('walletAddr').innerText = s.wallet;
         // compute claimable
-        const totalIdr = (s.tx || []).reduce((sum, r) => sum + r.rewardIdr, 0);
+        const totalIdr = (s.tx || []).reduce((sum, r) => sum + calcRewardIdr(r, s.rewardPct || 0), 0);
         const fee = Math.round(totalIdr * 0.02);
         const net = Math.max(0, totalIdr - fee);
         const mwxt = (net / (s.mwxtPrice || 2500)).toFixed(2);

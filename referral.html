@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MWX Referral — Flow pedagang_cilok</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --brand:#111827; --accent:#2563eb; }
+    body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
+    .step.active { color: var(--accent); font-weight: 700; }
+    .chip { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700; }
+    .btn { @apply inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold shadow-sm transition; }
+    .btn-primary { @apply bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800; }
+    .btn-outline { @apply border border-gray-300 text-gray-700 hover:bg-gray-50; }
+    .btn-danger { @apply bg-red-600 text-white hover:bg-red-700; }
+    .card { @apply bg-white rounded-2xl shadow-sm ring-1 ring-black/5; }
+    .field { @apply block w-full rounded-xl border border-gray-300 px-3 py-2 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500; }
+    .label { @apply block text-sm font-medium text-gray-700 mb-1; }
+    .kbd { @apply inline-flex items-center rounded-md border border-gray-300 bg-gray-50 px-1.5 py-0.5 text-xs font-medium text-gray-700; }
+    .link { @apply text-blue-600 hover:text-blue-700 underline underline-offset-4; }
+    .hidden-vis { display:none; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+  <!-- Topbar -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-200">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
+      <div class="h-9 w-9 grid place-items-center rounded-xl bg-blue-600 text-white font-bold">MWX</div>
+      <div class="text-sm text-gray-500">Marketplace</div>
+      <div class="ml-auto flex items-center gap-3 text-sm">
+        <div id="userName" class="font-semibold">pedagang_cilok</div>
+        <span class="text-gray-300">|</span>
+        <button class="btn btn-outline" onclick="resetDemo()">Reset Demo</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-8 space-y-8">
+    <!-- Steps -->
+    <nav class="flex items-center gap-2 text-sm" aria-label="Langkah">
+      <span class="step" id="step-terms">1. S&K</span>
+      <span class="text-gray-300">→</span>
+      <span class="step" id="step-settings">2. Pengaturan Referral</span>
+      <span class="text-gray-300">→</span>
+      <span class="step" id="step-dashboard">3. Dashboard</span>
+      <span class="text-gray-300">→</span>
+      <span class="step" id="step-claim">4. Klaim</span>
+    </nav>
+
+    <!-- SECTION: Terms & Conditions -->
+    <section id="view-terms" class="card p-6 space-y-5">
+      <header class="flex items-start justify-between gap-4">
+        <div>
+          <h1 class="text-xl font-bold">Program Referral MWX</h1>
+          <p class="text-sm text-gray-600">Setiap pembelian via link Anda memberikan reward dalam <span class="font-semibold">MWXT</span> dan diskon bagi pengguna baru.</p>
+        </div>
+        <span class="chip">Langkah 1/4</span>
+      </header>
+
+      <div class="prose prose-sm max-w-none">
+        <h3>Syarat & Ketentuan ringkas</h3>
+        <ul>
+          <li>Dilarang self-referral, spam, atau penyalahgunaan trafik.</li>
+          <li>Reward dibayarkan dalam bentuk <strong>MWXT</strong> pada periode klaim.</li>
+          <li>Total <em>reward + diskon</em> mengikuti batas yang ditetapkan <em>Superadmin</em>.</li>
+          <li>Setelan referral <strong>final</strong> dan tidak dapat diubah setelah disimpan.</li>
+          <li>Setiap user hanya memiliki <strong>1 link referral</strong>.</li>
+        </ul>
+      </div>
+
+      <label class="flex items-start gap-3">
+        <input id="agreeCheck" type="checkbox" class="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600" />
+        <span class="text-sm text-gray-700">Saya setuju dengan Syarat & Ketentuan program referral MWX.</span>
+      </label>
+
+      <div class="flex items-center gap-3">
+        <button id="btnInviteFromTerms" class="btn btn-primary disabled:opacity-50" disabled>Undang Teman</button>
+        <button class="btn btn-outline" onclick="goto('view-dashboard')">Lewati (lihat Dashboard)</button>
+      </div>
+    </section>
+
+    <!-- SECTION: Referral Settings -->
+    <section id="view-settings" class="card p-6 space-y-6 hidden-vis">
+      <header class="flex items-start justify-between gap-4">
+        <div>
+          <h2 class="text-xl font-bold">Pengaturan Referral</h2>
+          <p class="text-sm text-gray-600">Atur komposisi diskon untuk pengguna baru dan reward untuk Anda.</p>
+        </div>
+        <span class="chip">Langkah 2/4</span>
+      </header>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="md:col-span-2 card p-4 space-y-4">
+          <div>
+            <label class="label">Batas total (ditentukan Superadmin)</label>
+            <div class="text-2xl font-semibold"><span id="maxPool">10</span>%</div>
+            <p class="text-xs text-gray-500">Contoh: Jika total 10%, Anda bisa membagi menjadi 6% reward + 4% diskon.</p>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="label">Reward untuk Anda (%)</label>
+              <input id="rewardPct" type="range" min="0" max="10" value="6" class="w-full" oninput="syncSplit('reward')" />
+              <div class="text-sm text-gray-700 mt-1"><span id="rewardPctVal">6</span>%</div>
+            </div>
+            <div>
+              <label class="label">Diskon untuk Pengguna Baru (%)</label>
+              <input id="discountPct" type="range" min="0" max="10" value="4" class="w-full" oninput="syncSplit('discount')" />
+              <div class="text-sm text-gray-700 mt-1"><span id="discountPctVal">4</span>%</div>
+            </div>
+          </div>
+
+          <div class="text-sm text-gray-600">Sisa alokasi: <span id="remaining" class="font-semibold">0%</span></div>
+        </div>
+
+        <div class="card p-4 space-y-3">
+          <div>
+            <label class="label">Link Referral</label>
+            <div class="flex gap-2">
+              <input id="refLink" class="field" type="text" readonly value="" />
+              <button class="btn btn-outline" onclick="copyLink()">Copy</button>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">Satu user hanya memiliki satu link referral.</p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button id="btnSaveSettings" class="btn btn-primary w-full" onclick="saveSettings()">Simpan</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-xs text-gray-500">Catatan: Setelah menyimpan, pengaturan tidak dapat diubah.</div>
+    </section>
+
+    <!-- SECTION: Dashboard -->
+    <section id="view-dashboard" class="space-y-6 hidden-vis">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h2 class="text-xl font-bold">Dashboard Referral</h2>
+          <p class="text-sm text-gray-600">Lihat performa link referral Anda dan klaim reward pada periode yang tersedia.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="btn btn-outline" onclick="goto('view-settings')">Pengaturan</button>
+          <button class="btn btn-primary" onclick="goto('view-claim')">Klaim Reward</button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="grid md:grid-cols-4 gap-4">
+        <div class="card p-4">
+          <div class="text-xs text-gray-500">Pengguna via Referral</div>
+          <div class="text-2xl font-semibold" id="statUsers">0</div>
+        </div>
+        <div class="card p-4">
+          <div class="text-xs text-gray-500">Pembelian Berhasil</div>
+          <div class="text-2xl font-semibold" id="statOrders">0</div>
+        </div>
+        <div class="card p-4">
+          <div class="text-xs text-gray-500">Reward (IDR)</div>
+          <div class="text-2xl font-semibold" id="statRewardIdr">Rp0</div>
+        </div>
+        <div class="card p-4">
+          <div class="text-xs text-gray-500">Reward ≈ MWXT</div>
+          <div class="text-2xl font-semibold" id="statRewardMwxt">0</div>
+          <div class="text-xs text-gray-500 mt-1">Kurs MWXT: Rp<span id="mwxtPrice">2,500</span></div>
+        </div>
+      </div>
+
+      <!-- Price control (demo) -->
+      <div class="card p-4 flex items-center justify-between gap-4">
+        <div>
+          <div class="text-sm font-medium">Harga MWXT (demo)</div>
+          <p class="text-xs text-gray-500">Hanya untuk simulasi konversi.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-sm">Rp</span>
+          <input id="inputMwxtPrice" type="number" class="field w-40" value="2500" min="1" step="1" />
+          <button class="btn btn-outline" onclick="updateMwxtPrice()">Update</button>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="card p-0 overflow-hidden">
+        <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+          <div class="font-semibold">Transaksi via Referral</div>
+          <div class="text-sm text-gray-500">Total: <span id="tableCount">0</span></div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50 text-xs uppercase text-gray-500">
+              <tr>
+                <th class="px-4 py-2 text-left">Tanggal</th>
+                <th class="px-4 py-2 text-left">User</th>
+                <th class="px-4 py-2 text-left">Aplikasi</th>
+                <th class="px-4 py-2 text-right">Harga</th>
+                <th class="px-4 py-2 text-right">Diskon</th>
+                <th class="px-4 py-2 text-right">Reward (IDR)</th>
+              </tr>
+            </thead>
+            <tbody id="txBody" class="divide-y divide-gray-100 bg-white"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: Claim -->
+    <section id="view-claim" class="card p-6 space-y-6 hidden-vis">
+      <header class="flex items-start justify-between gap-4">
+        <div>
+          <h2 class="text-xl font-bold">Klaim Reward</h2>
+          <p class="text-sm text-gray-600">Periode klaim ditentukan oleh Superadmin.</p>
+        </div>
+        <span class="chip">Langkah 4/4</span>
+      </header>
+
+      <!-- Period Control (Demo) -->
+      <div class="flex items-center gap-3">
+        <span class="text-sm text-gray-600">Periode klaim (demo):</span>
+        <label class="inline-flex items-center gap-2 text-sm">
+          <input id="claimOpen" type="checkbox" class="h-4 w-4" onchange="renderClaim()" /> Buka
+        </label>
+      </div>
+
+      <div id="claimClosedBox" class="p-4 border border-amber-200 bg-amber-50 rounded-xl hidden-vis">
+        <div class="font-medium">Periode klaim sedang ditutup.</div>
+        <p class="text-sm text-amber-700">Silakan kembali pada jadwal yang ditentukan Superadmin.</p>
+      </div>
+
+      <!-- Wallet gate -->
+      <div id="walletGate" class="space-y-4 hidden-vis">
+        <div class="p-4 border border-blue-200 bg-blue-50 rounded-xl">
+          <div class="font-medium">Wallet belum tersimpan</div>
+          <p class="text-sm text-blue-700">Masukkan alamat wallet untuk menerima MWXT. Jika belum punya, buat terlebih dahulu.</p>
+        </div>
+        <div class="grid sm:grid-cols-3 gap-3 items-end">
+          <div class="sm:col-span-2">
+            <label class="label">Alamat Wallet</label>
+            <input id="walletInput" class="field" placeholder="0x..." />
+          </div>
+          <div class="flex gap-2">
+            <a class="btn btn-outline w-full" href="#" onclick="alert('Tautan pembuatan wallet (placeholder)')">Buat Wallet</a>
+            <button class="btn btn-primary w-full" onclick="saveWallet()">Simpan</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Claim summary -->
+      <div id="claimSummary" class="grid md:grid-cols-3 gap-6 hidden-vis">
+        <div class="md:col-span-2 card p-4 space-y-4">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <div class="text-sm text-gray-500">Total Reward (IDR)</div>
+              <div class="text-2xl font-semibold" id="claimIdr">Rp0</div>
+            </div>
+            <div>
+              <div class="text-sm text-gray-500">Biaya (2%)</div>
+              <div class="text-2xl font-semibold" id="claimFee">Rp0</div>
+            </div>
+            <div>
+              <div class="text-sm text-gray-500">Diterima (IDR)</div>
+              <div class="text-2xl font-semibold" id="claimNet">Rp0</div>
+            </div>
+            <div>
+              <div class="text-sm text-gray-500">≈ MWXT</div>
+              <div class="text-2xl font-semibold" id="claimMwxt">0</div>
+              <div class="text-xs text-gray-500">Kurs MWXT: Rp<span id="claimPrice">2,500</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="card p-4 space-y-4">
+          <div class="text-sm text-gray-600">Penarikan akan dikirim ke:</div>
+          <div class="font-mono text-sm" id="walletAddr">—</div>
+          <button class="btn btn-primary w-full" onclick="confirmWithdraw()">Withdraw</button>
+          <button class="btn btn-outline w-full" onclick="goto('view-dashboard')">Kembali ke Dashboard</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODALS -->
+  <dialog id="confirmLock" class="rounded-2xl p-0 w-full max-w-md">
+    <div class="p-6 space-y-4">
+      <h3 class="text-lg font-semibold">Konfirmasi Penguncian Pengaturan</h3>
+      <p class="text-sm text-gray-600">Setelah disimpan, pengaturan reward & diskon <strong>tidak dapat diubah</strong>. Lanjutkan?</p>
+      <div class="flex items-center justify-end gap-2">
+        <button class="btn btn-outline" onclick="document.getElementById('confirmLock').close()">Batal</button>
+        <button class="btn btn-primary" onclick="finalizeSettings()">Ya, Simpan</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="confirmWithdrawDialog" class="rounded-2xl p-0 w-full max-w-md">
+    <div class="p-6 space-y-4">
+      <h3 class="text-lg font-semibold">Konfirmasi Withdraw</h3>
+      <p class="text-sm text-gray-600">Apakah Anda yakin akan melakukan penarikan? Proses ini akan segera dimulai.</p>
+      <div class="flex items-center justify-end gap-2">
+        <button class="btn btn-outline" onclick="document.getElementById('confirmWithdrawDialog').close()">Batal</button>
+        <button class="btn btn-danger" onclick="doWithdraw()">Konfirmasi</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- TOAST -->
+  <div id="toast" class="fixed bottom-6 right-6 hidden-vis">
+    <div class="card px-4 py-3 flex items-center gap-3">
+      <div class="h-2 w-2 rounded-full bg-green-600"></div>
+      <div id="toastText" class="text-sm"></div>
+    </div>
+  </div>
+
+  <script>
+    // --- Simple store (demo) ---
+    const store = {
+      key: 'mwx_referral_demo_v1',
+      get() {
+        return JSON.parse(localStorage.getItem(this.key) || '{}');
+      },
+      set(obj) {
+        localStorage.setItem(this.key, JSON.stringify(obj));
+      }
+    }
+
+    // --- Utilities ---
+    const fmtIDR = (n) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(n || 0);
+    const show = (id, on = true) => document.getElementById(id).classList.toggle('hidden-vis', !on);
+    const setStep = (name) => {
+      ['terms','settings','dashboard','claim'].forEach(s => {
+        document.getElementById(`step-${s}`).classList.toggle('active', s === name);
+      });
+    }
+    const toast = (msg) => {
+      const t = document.getElementById('toast');
+      document.getElementById('toastText').innerText = msg;
+      t.classList.remove('hidden-vis');
+      setTimeout(() => t.classList.add('hidden-vis'), 2000);
+    }
+
+    // --- Navigation ---
+    function goto(viewId) {
+      ['view-terms','view-settings','view-dashboard','view-claim'].forEach(id => show(id, false));
+      show(viewId, true);
+      if (viewId === 'view-terms') setStep('terms');
+      if (viewId === 'view-settings') setStep('settings');
+      if (viewId === 'view-dashboard') { setStep('dashboard'); renderDashboard(); }
+      if (viewId === 'view-claim') { setStep('claim'); renderClaim(); }
+    }
+
+    // --- Terms ---
+    const agreeCheck = document.getElementById('agreeCheck');
+    agreeCheck.addEventListener('change', () => {
+      document.getElementById('btnInviteFromTerms').disabled = !agreeCheck.checked;
+    });
+    document.getElementById('btnInviteFromTerms').addEventListener('click', () => {
+      ensureReferralLink();
+      goto('view-settings');
+    });
+
+    // --- Settings ---
+    function ensureReferralLink() {
+      const s = store.get();
+      if (!s.refCode) {
+        s.refCode = Math.random().toString(36).slice(2, 10);
+        s.refLink = `https://mwx.market/r/${s.refCode}`;
+        s.maxPool = 10; // demo fixed from superadmin
+        s.rewardPct = 6;
+        s.discountPct = 4;
+        s.locked = false;
+        s.mwxtPrice = 2500;
+        s.wallet = s.wallet || '';
+        s.tx = s.tx || demoTransactions();
+        store.set(s);
+      }
+      document.getElementById('refLink').value = store.get().refLink;
+      document.getElementById('maxPool').innerText = store.get().maxPool;
+      document.getElementById('rewardPct').value = store.get().rewardPct;
+      document.getElementById('discountPct').value = store.get().discountPct;
+      syncSplit();
+    }
+
+    function syncSplit(changed) {
+      const s = store.get();
+      const maxPool = s.maxPool || 10;
+      let reward = parseInt(document.getElementById('rewardPct').value, 10);
+      let discount = parseInt(document.getElementById('discountPct').value, 10);
+      if (changed === 'reward') discount = maxPool - reward;
+      if (changed === 'discount') reward = maxPool - discount;
+      reward = Math.max(0, Math.min(maxPool, reward));
+      discount = maxPool - reward;
+      document.getElementById('rewardPct').value = reward;
+      document.getElementById('discountPct').value = discount;
+      document.getElementById('rewardPctVal').innerText = reward;
+      document.getElementById('discountPctVal').innerText = discount;
+      document.getElementById('remaining').innerText = `${maxPool - (reward + discount)}%`;
+    }
+
+    function copyLink() {
+      navigator.clipboard.writeText(document.getElementById('refLink').value);
+      toast('Link referral disalin');
+    }
+
+    function saveSettings() {
+      const s = store.get();
+      if (s.locked) { toast('Pengaturan sudah terkunci'); return; }
+      document.getElementById('confirmLock').showModal();
+    }
+
+    function finalizeSettings() {
+      const s = store.get();
+      s.rewardPct = parseInt(document.getElementById('rewardPct').value, 10);
+      s.discountPct = parseInt(document.getElementById('discountPct').value, 10);
+      s.locked = true;
+      store.set(s);
+      document.getElementById('confirmLock').close();
+      toast('Pengaturan disimpan & dikunci');
+      goto('view-dashboard');
+    }
+
+    // --- Dashboard ---
+    function renderDashboard() {
+      const s = store.get();
+      if (!s.refCode) ensureReferralLink();
+      document.getElementById('inputMwxtPrice').value = s.mwxtPrice || 2500;
+      document.getElementById('mwxtPrice').innerText = s.mwxtPrice || 2500;
+      // aggregate
+      const rows = s.tx || [];
+      const users = new Set(rows.map(r => r.user));
+      const orders = rows.length;
+      const rewardIdr = rows.reduce((sum, r) => sum + r.rewardIdr, 0);
+      const rewardMwxt = (rewardIdr / (s.mwxtPrice || 2500)).toFixed(2);
+      document.getElementById('statUsers').innerText = users.size;
+      document.getElementById('statOrders').innerText = orders;
+      document.getElementById('statRewardIdr').innerText = fmtIDR(rewardIdr);
+      document.getElementById('statRewardMwxt').innerText = rewardMwxt;
+      // table
+      const body = document.getElementById('txBody');
+      body.innerHTML = '';
+      rows.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="px-4 py-2 text-sm text-gray-700">${r.date}</td>
+          <td class="px-4 py-2 text-sm">${r.user}</td>
+          <td class="px-4 py-2 text-sm">${r.app}</td>
+          <td class="px-4 py-2 text-sm text-right">${fmtIDR(r.price)}</td>
+          <td class="px-4 py-2 text-sm text-right">${r.discountPct}%</td>
+          <td class="px-4 py-2 text-sm text-right">${fmtIDR(r.rewardIdr)}</td>
+        `;
+        body.appendChild(tr);
+      });
+      document.getElementById('tableCount').innerText = rows.length;
+    }
+
+    function updateMwxtPrice() {
+      const val = parseInt(document.getElementById('inputMwxtPrice').value, 10) || 2500;
+      const s = store.get();
+      s.mwxtPrice = Math.max(1, val);
+      store.set(s);
+      document.getElementById('mwxtPrice').innerText = s.mwxtPrice;
+      toast('Kurs MWXT diperbarui');
+      renderDashboard();
+      renderClaim();
+    }
+
+    // --- Claim ---
+    function renderClaim() {
+      const s = store.get();
+      const isOpen = document.getElementById('claimOpen').checked;
+      show('claimClosedBox', !isOpen);
+      if (!isOpen) { show('walletGate', false); show('claimSummary', false); return; }
+
+      const hasWallet = !!s.wallet;
+      show('walletGate', !hasWallet);
+      show('claimSummary', hasWallet);
+      if (hasWallet) {
+        document.getElementById('walletAddr').innerText = s.wallet;
+        // compute claimable
+        const totalIdr = (s.tx || []).reduce((sum, r) => sum + r.rewardIdr, 0);
+        const fee = Math.round(totalIdr * 0.02);
+        const net = Math.max(0, totalIdr - fee);
+        const mwxt = (net / (s.mwxtPrice || 2500)).toFixed(2);
+        document.getElementById('claimIdr').innerText = fmtIDR(totalIdr);
+        document.getElementById('claimFee').innerText = fmtIDR(fee);
+        document.getElementById('claimNet').innerText = fmtIDR(net);
+        document.getElementById('claimMwxt').innerText = mwxt;
+        document.getElementById('claimPrice').innerText = s.mwxtPrice || 2500;
+      }
+    }
+
+    function saveWallet() {
+      const addr = document.getElementById('walletInput').value.trim();
+      if (!/^0x[a-fA-F0-9]{6,}$/i.test(addr)) { toast('Alamat wallet tidak valid'); return; }
+      const s = store.get(); s.wallet = addr; store.set(s);
+      toast('Wallet disimpan');
+      renderClaim();
+    }
+
+    function confirmWithdraw() {
+      document.getElementById('confirmWithdrawDialog').showModal();
+    }
+
+    function doWithdraw() {
+      const s = store.get();
+      // Clear rewards (demo) and mark as paid
+      s.tx = (s.tx || []).map(x => ({ ...x, rewardIdr: 0 }));
+      store.set(s);
+      document.getElementById('confirmWithdrawDialog').close();
+      toast('Penarikan diproses');
+      renderClaim();
+      renderDashboard();
+    }
+
+    // --- Demo data ---
+    function demoTransactions() {
+      const s = store.get();
+      const discount = (s && s.discountPct) || 4;
+      const rewardPct = (s && s.rewardPct) || 6;
+      const base = [
+        { date: '2025-10-12', user: 'tukang_sprei', app: 'ReportWhiz Pro', price: 250000 },
+        { date: '2025-10-20', user: 'kopi_sudut', app: 'SalesWhiz Plus', price: 150000 },
+        { date: '2025-11-02', user: 'kue_bu_tini', app: 'CarbonThink Basic', price: 100000 },
+      ];
+      return base.map(b => ({
+        ...b,
+        discountPct: discount,
+        rewardIdr: Math.round(b.price * (rewardPct/100))
+      }));
+    }
+
+    // --- Reset ---
+    function resetDemo() {
+      localStorage.removeItem(store.key);
+      location.reload();
+    }
+
+    // --- Init ---
+    (function init() {
+      const s = store.get();
+      if (!s.refCode) {
+        goto('view-terms');
+      } else {
+        ensureReferralLink();
+        goto('view-dashboard');
+      }
+    })();
+  </script>
+</body>
+</html>

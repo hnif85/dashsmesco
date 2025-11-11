@@ -22,6 +22,26 @@
       background:#eff6ff;
       color:#1d4ed8;
     }
+    .option-card {
+      display:flex;
+      flex-direction:column;
+      gap:0.125rem;
+      border:1px solid #e5e7eb;
+      border-radius:0.75rem;
+      padding:0.75rem;
+      background:#fff;
+      transition:border-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+    }
+    .option-card:hover {
+      border-color:#93c5fd;
+      box-shadow:0 4px 12px rgba(37,99,235,0.08);
+      transform:translateY(-1px);
+    }
+    .option-card.active {
+      border-color:#2563eb;
+      background:#eff6ff;
+      box-shadow:0 4px 16px rgba(37,99,235,0.15);
+    }
     .btn {
       display:inline-flex;
       align-items:center;
@@ -107,6 +127,15 @@
     }
     .link:hover { color:#1d4ed8; }
     .hidden-vis { display:none; }
+    .spinner {
+      width:1.5rem;
+      height:1.5rem;
+      border-radius:9999px;
+      border:3px solid #d1d5db;
+      border-top-color:#2563eb;
+      animation:spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
@@ -249,7 +278,7 @@
       </div>
 
       <!-- Stats -->
-      <div class="grid md:grid-cols-4 gap-4">
+      <div class="grid md:grid-cols-3 gap-4">
         <div class="card p-4">
           <div class="text-xs text-gray-500">Pengguna via Referral</div>
           <div class="text-2xl font-semibold" id="statUsers">0</div>
@@ -261,11 +290,6 @@
         <div class="card p-4">
           <div class="text-xs text-gray-500">Reward (IDR)</div>
           <div class="text-2xl font-semibold" id="statRewardIdr">Rp0</div>
-        </div>
-        <div class="card p-4">
-          <div class="text-xs text-gray-500">Reward ≈ MWXT</div>
-          <div class="text-2xl font-semibold" id="statRewardMwxt">0</div>
-          <div class="text-xs text-gray-500 mt-1">Kurs MWXT: Rp<span id="mwxtPrice">2,500</span></div>
         </div>
       </div>
 
@@ -308,21 +332,41 @@
         <p class="text-sm text-amber-700">Silakan kembali pada jadwal yang ditentukan Superadmin.</p>
       </div>
 
-      <!-- Wallet gate -->
-      <div id="walletGate" class="space-y-4 hidden-vis">
-        <div class="p-4 border border-blue-200 bg-blue-50 rounded-xl">
-          <div class="font-medium">Wallet belum tersimpan</div>
-          <p class="text-sm text-blue-700">Masukkan alamat wallet untuk menerima MWXT. Jika belum punya, buat terlebih dahulu.</p>
+      <!-- Payout setup -->
+      <div id="payoutSetup" class="card p-6 space-y-4 hidden-vis">
+        <div>
+          <h3 class="text-lg font-semibold">Atur Tujuan Transfer</h3>
+          <p class="text-sm text-gray-600">Pilih metode pencairan dan isi detail rekening atau e-wallet Anda.</p>
         </div>
-        <div class="grid sm:grid-cols-3 gap-3 items-end">
-          <div class="sm:col-span-2">
-            <label class="label">Alamat Wallet</label>
-            <input id="walletInput" class="field" placeholder="0x..." />
+        <div>
+          <label class="label" for="payoutMethod">Metode Transfer</label>
+          <select id="payoutMethod" class="field" onchange="handlePayoutMethodChange()">
+            <option value="bank">Transfer Bank</option>
+            <option value="ewallet">E-Wallet</option>
+            <option value="lainnya">Metode Lain</option>
+          </select>
+        </div>
+        <div id="payoutSuggestionWrapper" class="space-y-2 hidden-vis">
+          <div class="label">Pilih Tujuan Cepat</div>
+          <div id="payoutSuggestionList" class="grid sm:grid-cols-3 gap-3"></div>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="label" for="payoutProvider">Penyedia</label>
+            <input id="payoutProvider" class="field" placeholder="Nama bank / e-wallet" />
           </div>
-          <div class="flex gap-2">
-            <a class="btn btn-outline w-full" href="#" onclick="alert('Tautan pembuatan wallet (placeholder)')">Buat Wallet</a>
-            <button class="btn btn-primary w-full" onclick="saveWallet()">Simpan</button>
+          <div>
+            <label class="label" for="payoutAccount">Nomor Tujuan</label>
+            <input id="payoutAccount" class="field" placeholder="1234567890" />
           </div>
+        </div>
+        <div>
+          <label class="label" for="payoutNotes">Catatan Tambahan (opsional)</label>
+          <textarea id="payoutNotes" class="field" rows="2" placeholder="Nama pemilik, cabang, atau informasi lain"></textarea>
+        </div>
+        <div class="flex gap-2">
+          <button id="btnCancelPayout" class="btn btn-outline w-full hidden-vis" type="button" onclick="cancelPayoutEdit()">Batal</button>
+          <button class="btn btn-primary w-full" type="button" onclick="savePayoutDestination()">Simpan Tujuan</button>
         </div>
       </div>
 
@@ -342,17 +386,18 @@
               <div class="text-sm text-gray-500">Diterima (IDR)</div>
               <div class="text-2xl font-semibold" id="claimNet">Rp0</div>
             </div>
-            <div>
-              <div class="text-sm text-gray-500">≈ MWXT</div>
-              <div class="text-2xl font-semibold" id="claimMwxt">0</div>
-              <div class="text-xs text-gray-500">Kurs MWXT: Rp<span id="claimPrice">2,500</span></div>
-            </div>
           </div>
         </div>
         <div class="card p-4 space-y-4">
-          <div class="text-sm text-gray-600">Penarikan akan dikirim ke:</div>
-          <div class="font-mono text-sm" id="walletAddr">—</div>
-          <button class="btn btn-primary w-full" onclick="confirmWithdraw()">Withdraw</button>
+          <div class="text-sm text-gray-600">Penarikan akan dikirim ke</div>
+          <div class="space-y-1">
+            <div class="text-sm font-semibold" id="claimMethodLabel">—</div>
+            <div class="font-mono text-sm" id="claimDestination">Lengkapi tujuan transfer terlebih dahulu.</div>
+            <div class="text-xs text-gray-500 hidden-vis" id="claimNotesLabel"></div>
+            <div class="text-xs text-blue-600 hidden-vis" id="walletProcessingNote"></div>
+          </div>
+          <button id="editPayoutBtn" class="btn btn-outline w-full" type="button" onclick="editPayoutDestination()">Ubah Tujuan Transfer</button>
+          <button class="btn btn-primary w-full" type="button" onclick="confirmWithdraw()">Withdraw</button>
           <button class="btn btn-outline w-full" onclick="goto('view-dashboard')">Kembali ke Dashboard</button>
         </div>
       </div>
@@ -375,9 +420,19 @@
     <div class="p-6 space-y-4">
       <h3 class="text-lg font-semibold">Konfirmasi Withdraw</h3>
       <p class="text-sm text-gray-600">Apakah Anda yakin akan melakukan penarikan? Proses ini akan segera dimulai.</p>
-      <div class="flex items-center justify-end gap-2">
+      <div class="rounded-xl bg-gray-50 p-4 text-sm space-y-1">
+        <div class="font-semibold" id="confirmWithdrawMethod">-</div>
+        <div class="font-mono text-sm" id="confirmWithdrawAccount">-</div>
+        <div class="text-xs text-gray-500" id="confirmWithdrawNotesDialog"></div>
+        <div class="text-xs text-blue-600 hidden-vis" id="confirmWalletProcessingNote"></div>
+      </div>
+      <div id="withdrawLoadingState" class="hidden-vis flex items-center gap-3 text-sm text-gray-600">
+        <div class="spinner"></div>
+        <span>Penarikan sedang diproses...</span>
+      </div>
+      <div id="withdrawActionButtons" class="flex items-center justify-end gap-2">
         <button class="btn btn-outline" onclick="document.getElementById('confirmWithdrawDialog').close()">Batal</button>
-        <button class="btn btn-danger" onclick="doWithdraw()">Konfirmasi</button>
+        <button id="confirmWithdrawButton" class="btn btn-danger" onclick="doWithdraw()">Konfirmasi</button>
       </div>
     </div>
   </dialog>
@@ -397,23 +452,13 @@
           <p class="text-xs text-gray-500">Hanya terlihat di prototipe ini.</p>
         </div>
         <div class="p-4 space-y-4 text-sm">
-          <div>
-            <div class="text-xs text-gray-500 mb-2">Harga MWXT (demo)</div>
-            <div class="flex items-center gap-2">
-              <span class="text-sm">Rp</span>
-              <input id="inputMwxtPrice" type="number" class="field flex-1" value="2500" min="1" step="1" />
-              <button class="btn btn-outline" onclick="updateMwxtPrice()">Update</button>
-            </div>
-          </div>
-          <div class="border-t border-gray-100 pt-4">
-            <label class="flex items-center justify-between gap-3 text-sm">
-              <span>Periode klaim (demo)</span>
-              <span class="inline-flex items-center gap-2">
-                <input id="claimOpen" type="checkbox" class="h-4 w-4" onchange="renderClaim()" />
-                <span class="text-xs uppercase tracking-wide text-gray-500">Buka</span>
-              </span>
-            </label>
-          </div>
+          <label class="flex items-center justify-between gap-3 text-sm">
+            <span>Periode klaim (demo)</span>
+            <span class="inline-flex items-center gap-2">
+              <input id="claimOpen" type="checkbox" class="h-4 w-4" onchange="renderClaim()" />
+              <span class="text-xs uppercase tracking-wide text-gray-500">Buka</span>
+            </span>
+          </label>
         </div>
       </div>
     </div>
@@ -430,6 +475,34 @@
         localStorage.setItem(this.key, JSON.stringify(obj));
       }
     }
+
+    let editingPayout = false;
+    let withdrawing = false;
+    const payoutMethodLabels = {
+      bank: 'Transfer Bank',
+      ewallet: 'E-Wallet',
+      lainnya: 'Metode Lain'
+    };
+    const walletProcessingText = 'Withdraw dikirim dalam bentuk MWXT dan akan masuk ke wallet dalam 2x24 jam.';
+    const payoutSuggestions = {
+      bank: [
+        { id: 'bca', name: 'BCA', desc: 'Bank Central Asia' },
+        { id: 'bri', name: 'BRI', desc: 'Bank Rakyat Indonesia' },
+        { id: 'bni', name: 'BNI', desc: 'Bank Negara Indonesia' },
+        { id: 'mandiri', name: 'Mandiri', desc: 'Bank Mandiri' },
+        { id: 'cimb', name: 'CIMB Niaga', desc: 'Transfer instan' }
+      ],
+      ewallet: [
+        { id: 'gopay', name: 'GoPay', desc: 'Saldo Gojek' },
+        { id: 'ovo', name: 'OVO', desc: 'Dompet digital' },
+        { id: 'dana', name: 'DANA', desc: 'Tarik cepat' },
+        { id: 'shopeepay', name: 'ShopeePay', desc: 'Terhubung Shopee' },
+        { id: 'linkaja', name: 'LinkAja', desc: 'Dompet Telkomsel' }
+      ],
+      lainnya: [
+        { id: 'mwxwallet', name: 'MWX Wallet', desc: 'Terima MWXT di aplikasi' }
+      ]
+    };
 
     // --- Utilities ---
     const fmtIDR = (n) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(n || 0);
@@ -482,16 +555,23 @@
         s.rewardPct = 6;
         s.discountPct = 4;
         s.locked = false;
-        s.mwxtPrice = 2500;
-        s.wallet = s.wallet || '';
         s.tx = s.tx || demoTransactions();
-        store.set(s);
       }
-      syncDemoControls();
-      document.getElementById('refLink').value = store.get().refLink;
-      document.getElementById('maxPool').innerText = store.get().maxPool;
-      document.getElementById('rewardPct').value = store.get().rewardPct;
-      document.getElementById('discountPct').value = store.get().discountPct;
+      if (s.wallet && !s.payoutAccount) {
+        s.payoutMethod = s.payoutMethod || 'ewallet';
+        s.payoutProvider = s.payoutProvider || 'Wallet';
+        s.payoutAccount = s.wallet;
+      }
+      s.payoutMethod = s.payoutMethod || 'bank';
+      s.payoutProvider = s.payoutProvider || '';
+      s.payoutAccount = s.payoutAccount || '';
+      s.payoutNotes = s.payoutNotes || '';
+      delete s.wallet;
+      store.set(s);
+      document.getElementById('refLink').value = s.refLink;
+      document.getElementById('maxPool').innerText = s.maxPool;
+      document.getElementById('rewardPct').value = s.rewardPct;
+      document.getElementById('discountPct').value = s.discountPct;
       syncSplit();
     }
 
@@ -518,12 +598,6 @@
       toast('Link referral disalin');
     }
 
-    function syncDemoControls() {
-      const s = store.get();
-      const priceInput = document.getElementById('inputMwxtPrice');
-      if (priceInput) priceInput.value = s.mwxtPrice || 2500;
-    }
-
     function saveSettings() {
       const s = store.get();
       if (s.locked) { toast('Pengaturan sudah terkunci'); return; }
@@ -545,8 +619,6 @@
     function renderDashboard() {
       const s = store.get();
       if (!s.refCode) ensureReferralLink();
-      document.getElementById('inputMwxtPrice').value = s.mwxtPrice || 2500;
-      document.getElementById('mwxtPrice').innerText = s.mwxtPrice || 2500;
       const dashLinkInput = document.getElementById('dashboardRefLink');
       if (dashLinkInput) dashLinkInput.value = s.refLink || 'https://mwx.market/r/—';
       const refCodeLabel = document.getElementById('refCodeLabel');
@@ -556,11 +628,9 @@
       const users = new Set(rows.map(r => r.user));
       const orders = rows.length;
       const rewardIdr = rows.reduce((sum, r) => sum + calcRewardIdr(r, s.rewardPct || 0), 0);
-      const rewardMwxt = (rewardIdr / (s.mwxtPrice || 2500)).toFixed(2);
       document.getElementById('statUsers').innerText = users.size;
       document.getElementById('statOrders').innerText = orders;
       document.getElementById('statRewardIdr').innerText = fmtIDR(rewardIdr);
-      document.getElementById('statRewardMwxt').innerText = rewardMwxt;
       // table
       const body = document.getElementById('txBody');
       body.innerHTML = '';
@@ -580,64 +650,188 @@
       document.getElementById('tableCount').innerText = rows.length;
     }
 
-    function updateMwxtPrice() {
-      const val = parseInt(document.getElementById('inputMwxtPrice').value, 10) || 2500;
-      const s = store.get();
-      s.mwxtPrice = Math.max(1, val);
-      store.set(s);
-      document.getElementById('mwxtPrice').innerText = s.mwxtPrice;
-      syncDemoControls();
-      toast('Kurs MWXT diperbarui');
-      renderDashboard();
-      renderClaim();
-    }
-
     // --- Claim ---
     function renderClaim() {
       const s = store.get();
       const isOpen = document.getElementById('claimOpen').checked;
       show('claimClosedBox', !isOpen);
-      if (!isOpen) { show('walletGate', false); show('claimSummary', false); return; }
+      if (!isOpen) { show('payoutSetup', false); show('claimSummary', false); return; }
 
-      const hasWallet = !!s.wallet;
-      show('walletGate', !hasWallet);
-      show('claimSummary', hasWallet);
-      if (hasWallet) {
-        document.getElementById('walletAddr').innerText = s.wallet;
-        // compute claimable
-        const totalIdr = (s.tx || []).reduce((sum, r) => sum + calcRewardIdr(r, s.rewardPct || 0), 0);
-        const fee = Math.round(totalIdr * 0.02);
-        const net = Math.max(0, totalIdr - fee);
-        const mwxt = (net / (s.mwxtPrice || 2500)).toFixed(2);
-        document.getElementById('claimIdr').innerText = fmtIDR(totalIdr);
-        document.getElementById('claimFee').innerText = fmtIDR(fee);
-        document.getElementById('claimNet').innerText = fmtIDR(net);
-        document.getElementById('claimMwxt').innerText = mwxt;
-        document.getElementById('claimPrice').innerText = s.mwxtPrice || 2500;
+      // compute claimable summary
+      const totalIdr = (s.tx || []).reduce((sum, r) => sum + calcRewardIdr(r, s.rewardPct || 0), 0);
+      const fee = Math.round(totalIdr * 0.02);
+      const net = Math.max(0, totalIdr - fee);
+      document.getElementById('claimIdr').innerText = fmtIDR(totalIdr);
+      document.getElementById('claimFee').innerText = fmtIDR(fee);
+      document.getElementById('claimNet').innerText = fmtIDR(net);
+
+      const hasDestination = Boolean(s.payoutAccount && s.payoutMethod);
+      const showSetup = !hasDestination || editingPayout;
+      show('payoutSetup', showSetup);
+      show('claimSummary', hasDestination && !editingPayout);
+
+      const methodInput = document.getElementById('payoutMethod');
+      if (methodInput) methodInput.value = s.payoutMethod || 'bank';
+      const providerInput = document.getElementById('payoutProvider');
+      if (providerInput) providerInput.value = s.payoutProvider || '';
+      const accountInput = document.getElementById('payoutAccount');
+      if (accountInput) accountInput.value = s.payoutAccount || '';
+      const notesInput = document.getElementById('payoutNotes');
+      if (notesInput) notesInput.value = s.payoutNotes || '';
+      renderPayoutOptions();
+
+      const cancelBtn = document.getElementById('btnCancelPayout');
+      if (cancelBtn) cancelBtn.classList.toggle('hidden-vis', !editingPayout || !hasDestination);
+
+      const editBtn = document.getElementById('editPayoutBtn');
+      if (editBtn) editBtn.disabled = !hasDestination;
+
+      const notesLabel = document.getElementById('claimNotesLabel');
+      if (hasDestination) {
+        const methodLabel = payoutMethodLabels[s.payoutMethod] || 'Metode Transfer';
+        const providerLabel = s.payoutProvider ? ` • ${s.payoutProvider}` : '';
+        document.getElementById('claimMethodLabel').innerText = `${methodLabel}${providerLabel}`;
+        document.getElementById('claimDestination').innerText = s.payoutAccount;
+        if (notesLabel) {
+          notesLabel.innerText = s.payoutNotes || '';
+          notesLabel.classList.toggle('hidden-vis', !s.payoutNotes);
+        }
+      } else {
+        document.getElementById('claimMethodLabel').innerText = '—';
+        document.getElementById('claimDestination').innerText = 'Lengkapi tujuan transfer terlebih dahulu.';
+        if (notesLabel) {
+          notesLabel.classList.add('hidden-vis');
+          notesLabel.innerText = '';
+        }
+      }
+      const walletNote = document.getElementById('walletProcessingNote');
+      if (walletNote) {
+        const provider = (s.payoutProvider || '').toLowerCase();
+        const showWalletInfo = s.payoutMethod === 'lainnya' && provider.includes('wallet');
+        walletNote.innerText = walletProcessingText;
+        walletNote.classList.toggle('hidden-vis', !showWalletInfo);
       }
     }
 
-    function saveWallet() {
-      const addr = document.getElementById('walletInput').value.trim();
-      if (!/^0x[a-fA-F0-9]{6,}$/i.test(addr)) { toast('Alamat wallet tidak valid'); return; }
-      const s = store.get(); s.wallet = addr; store.set(s);
-      toast('Wallet disimpan');
+    function handlePayoutMethodChange() {
+      renderPayoutOptions();
+    }
+
+    function renderPayoutOptions() {
+      const wrapper = document.getElementById('payoutSuggestionWrapper');
+      const list = document.getElementById('payoutSuggestionList');
+      const methodInput = document.getElementById('payoutMethod');
+      const providerInput = document.getElementById('payoutProvider');
+      if (!wrapper || !list || !methodInput || !providerInput) return;
+      const method = methodInput.value;
+      const suggestions = payoutSuggestions[method] || [];
+      if (!suggestions.length) {
+        wrapper.classList.add('hidden-vis');
+        list.innerHTML = '';
+        return;
+      }
+      wrapper.classList.remove('hidden-vis');
+      const current = (providerInput.value || '').trim().toLowerCase();
+      list.innerHTML = suggestions.map((opt) => {
+        const isActive = current === opt.name.toLowerCase();
+        return `
+          <button type="button" class="option-card ${isActive ? 'active' : ''}" data-method="${method}" data-provider="${opt.name.replace(/"/g, '&quot;')}" onclick="selectPayoutSuggestion(this.dataset.method, this.dataset.provider)">
+            <span class="text-sm font-semibold">${opt.name}</span>
+            <span class="text-xs text-gray-500">${opt.desc}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectPayoutSuggestion(method, providerName) {
+      const methodInput = document.getElementById('payoutMethod');
+      const providerInput = document.getElementById('payoutProvider');
+      if (!methodInput || !providerInput) return;
+      methodInput.value = method;
+      providerInput.value = providerName;
+      renderPayoutOptions();
+      const accountInput = document.getElementById('payoutAccount');
+      if (accountInput) accountInput.focus();
+    }
+
+    function savePayoutDestination() {
+      const method = document.getElementById('payoutMethod').value;
+      const provider = document.getElementById('payoutProvider').value.trim();
+      const account = document.getElementById('payoutAccount').value.trim();
+      const notes = document.getElementById('payoutNotes').value.trim();
+      if (!account) { toast('Nomor tujuan wajib diisi'); return; }
+      const s = store.get();
+      s.payoutMethod = method;
+      s.payoutProvider = provider;
+      s.payoutAccount = account;
+      s.payoutNotes = notes;
+      store.set(s);
+      editingPayout = false;
+      toast('Tujuan transfer disimpan');
+      renderClaim();
+    }
+
+    function editPayoutDestination() {
+      editingPayout = true;
+      renderClaim();
+    }
+
+    function cancelPayoutEdit() {
+      editingPayout = false;
       renderClaim();
     }
 
     function confirmWithdraw() {
+      const s = store.get();
+      const methodLabel = payoutMethodLabels[s.payoutMethod] || 'Metode Transfer';
+      const methodText = s.payoutProvider ? `${methodLabel} • ${s.payoutProvider}` : methodLabel;
+      document.getElementById('confirmWithdrawMethod').innerText = methodText;
+      document.getElementById('confirmWithdrawAccount').innerText = s.payoutAccount || 'Tujuan belum diatur';
+      const notesEl = document.getElementById('confirmWithdrawNotesDialog');
+      if (notesEl) {
+        notesEl.innerText = s.payoutNotes || 'Pastikan nama dan nomor tujuan sudah benar sebelum melanjutkan.';
+      }
+      const walletInfo = s.payoutMethod === 'lainnya' && (s.payoutProvider || '').toLowerCase().includes('wallet');
+      const walletDialogNote = document.getElementById('confirmWalletProcessingNote');
+      if (walletDialogNote) {
+        walletDialogNote.innerText = walletProcessingText;
+        walletDialogNote.classList.toggle('hidden-vis', !walletInfo);
+      }
+      const walletSummaryNote = document.getElementById('walletProcessingNote');
+      if (walletSummaryNote && walletInfo) {
+        walletSummaryNote.innerText = walletProcessingText;
+        walletSummaryNote.classList.remove('hidden-vis');
+      }
+      setWithdrawLoading(false);
+      withdrawing = false;
       document.getElementById('confirmWithdrawDialog').showModal();
     }
 
+    function setWithdrawLoading(isLoading) {
+      const loading = document.getElementById('withdrawLoadingState');
+      const actions = document.getElementById('withdrawActionButtons');
+      if (!loading || !actions) return;
+      loading.classList.toggle('hidden-vis', !isLoading);
+      actions.classList.toggle('hidden-vis', isLoading);
+    }
+
     function doWithdraw() {
-      const s = store.get();
-      // Clear rewards (demo) and mark as paid
-      s.tx = (s.tx || []).map(x => ({ ...x, rewardIdr: 0 }));
-      store.set(s);
-      document.getElementById('confirmWithdrawDialog').close();
-      toast('Penarikan diproses');
-      renderClaim();
-      renderDashboard();
+      if (withdrawing) return;
+      withdrawing = true;
+      setWithdrawLoading(true);
+      setTimeout(() => {
+        const s = store.get();
+        // Clear rewards (demo) and mark as paid
+        s.tx = (s.tx || []).map(x => ({ ...x, rewardIdr: 0 }));
+        store.set(s);
+        setWithdrawLoading(false);
+        document.getElementById('confirmWithdrawDialog').close();
+        toast('Penarikan diproses');
+        editingPayout = false;
+        renderClaim();
+        renderDashboard();
+        withdrawing = false;
+      }, 1600);
     }
 
     // --- Demo data ---
